@@ -302,15 +302,16 @@ function enemyHitsPlayer(player, bullet) {
   }
 }
 
-function collisionHandler(bullet, alien) {
+function collisionHandler(bullet, aliens) {
   //  When a bullet hits an alien we kill them both
-
   console.log("collisison");
   if (i >= 0) {
     game.paused = true;
-    pushQuestion(i, game, isTrue => {
-      if (isTrue) {
-        callback(bullet, alien);
+    pushQuestion(i, game, ans => {
+      if (ans) {
+        console.log(bullet, aliens);
+        callback(bullet, aliens);
+      } else {
       }
     });
     i = i - 1;

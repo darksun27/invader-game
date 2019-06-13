@@ -17,12 +17,16 @@ function pushQuestion(i, game, callback) {
   const p = question[i].option.map((e, id) => {
     return `<div id=${id} onClick="check(${id},${
       question[i].correctoption
-    })" class="btn btn-primary btn-block">${e}</div>`;
+    },${callback})" class="btn btn-primary btn-block">${e}</div>`;
   });
 
   option.innerHTML = p.join(" ");
 }
 
-function check(e, option) {
-  console.log(e === option);
+function check(e, option, callback) {
+  if (e === option) {
+    callback(true);
+  } else {
+    console.log("wrong");
+  }
 }
