@@ -7,19 +7,13 @@
   };
 
   firebase.initializeApp(config);
-
   saveData();
 })();
 
 function saveData() {
-  console.log("running");
-  const demo = document.getElementById("demo");
   const stuRef = firebase
     .database()
     .ref()
     .child("student");
-  stuRef.push({ hello: "hahah" });
-  stuRef.on("value", snap => {
-    demo.innerText = snap.val();
-  });
+  stuRef.push({ hello: "lolololoo" });
 }

@@ -59,6 +59,7 @@ class playGame extends Phaser.Scene {
 
     // number of consecutive jumps made by the player
     this.playerJumps = 0;
+    this.i = 0;
 
     // adding a platform to the game, the arguments are platform width and x position
     this.addPlatform(game.config.width, game.config.width / 2);
@@ -120,8 +121,9 @@ class playGame extends Phaser.Scene {
   update() {
     // game over
     if (this.player.y > game.config.height) {
-      //popups the question
-      this.scene.start("PlayGame");
+      // console.log(game);
+      pushQuestion(this.i, game);
+      // this.scene.start("PlayGame");
     }
     this.player.x = gameOptions.playerStartPosition;
 
