@@ -1,4 +1,4 @@
-var question = [
+var questionData = [
   {
     question: "Which company created  the Javascript",
     option: ["Netscape", "Mozilla", "Apple", "Microsoft"],
