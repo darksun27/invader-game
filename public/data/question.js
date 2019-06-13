@@ -1,4 +1,4 @@
-export const question = [
+var question = [
   {
     question: "Which company created  the Javascript",
     option: ["Netscape", "Mozilla", "Apple", "Microsoft"],

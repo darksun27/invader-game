@@ -2,7 +2,7 @@ let game = new Phaser.Game(
   window.innerWidth,
   window.innerHeight,
   Phaser.AUTO,
-  "phaser-example",
+  "phaser-start",
   {
     preload: preload,
     create: create,
@@ -20,7 +20,11 @@ function preload() {
   game.load.image("starfield", "assets/space-1.png");
   game.load.audio("loadSound", "assets/sound/startSound.mp3");
   game.load.audio("explodeSound", "assets/sound/explode1.mp3");
-  game.load.image("button", "assets/spacebar.png");
+  game.load.atlas(
+    "generic",
+    "assets/generic-joystick.png",
+    "assets/generic-joystick.json"
+  );
 }
 
 let loadSound;
@@ -42,14 +46,21 @@ let enemyBullet;
 let firingTimer = 0;
 let stateText;
 let livingEnemies = [];
-let startGame = false;
-
-function startGameHandler() {
-  startGame = true;
-}
+let pad = null;
+let stick = null;
+let buttonA = null;
 
 function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
+
+  // console.log(Phaser);
+  // //phaser joystick
+  // pad = game.plugins.add(Phaser.VirtualJoystick);
+  // stick = pad.addStick(0, 0, 200, "generic");
+  // stick.alignBottomLeft(20);
+  // stick.motionLock = Phaser.VirtualJoystick.HORIZONTAL;
+  // buttonA = pad.addButton(500, 520, "generic", "button1-up", "button1-down");
+  // buttonA.alignBottomRight(20);
 
   //  The scrolling starfield background
   starfield = game.add.tileSprite(
@@ -82,15 +93,19 @@ function create() {
   enemyBullets = game.add.group();
   enemyBullets.enableBody = true;
   enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
-  enemyBullets.createMultiple(100, "enemyBullet");
+  enemyBullets.createMultiple(30, "enemyBullet");
   enemyBullets.setAll("anchor.x", 0.5);
   enemyBullets.setAll("anchor.y", 1);
   enemyBullets.setAll("outOfBoundsKill", true);
   enemyBullets.setAll("checkWorldBounds", true);
+  enemyBullets.width = 100;
+  enemyBullets.height = 100;
 
   //  The hero!
-  player = game.add.sprite(400, 500, "ship");
+  player = game.add.sprite(game.world.width / 2, 600, "ship");
   player.anchor.setTo(0.5, 0.5);
+  player.width = 30;
+  player.height = 30;
   game.physics.enable(player, Phaser.Physics.ARCADE);
 
   //  The baddies!
@@ -112,7 +127,7 @@ function create() {
 
   //  Lives
   lives = game.add.group();
-  livesText = game.add.text(game.world.width - 100, 10, "Lives : ", {
+  livesText = game.add.text(game.world.width - 200, 10, "Lives : ", {
     font: "34px Arial",
     fill: "#c51b7d"
   });
@@ -129,7 +144,7 @@ function create() {
   stateText.visible = false;
 
   for (let i = 0; i < 3; i++) {
-    let ship = lives.create(game.world.width - 100 + 30 * i, 60, "ship");
+    let ship = lives.create(game.world.width - 170 + 30 * i, 80, "ship");
     ship.anchor.setTo(0.5, 0.5);
     ship.angle = 90;
     ship.alpha = 0.4;
@@ -157,7 +172,7 @@ function createAliens() {
   }
 
   aliens.x = 100;
-  aliens.y = 50;
+  aliens.y = 200;
 
   //  All this does is basically start the invaders moving. Notice we're moving the Group they belong to, rather than the invaders directly.
   let tween = game.add
