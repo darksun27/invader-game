@@ -1,4 +1,4 @@
-function pushQuestion(array, i) {
+function pushQuestion(i) {
   console.log(question);
-  console.log(i, question[array[i]]);
+  console.log(i, question[i]);
 }

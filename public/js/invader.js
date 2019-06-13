@@ -244,7 +244,7 @@ function render() {}
 function collisionHandler(bullet, alien) {
   //  When a bullet hits an alien we kill them both
   if (i >= 0) {
-    pushQuestion(array, i);
+    pushQuestion(i);
     i = i - 1;
   }
 
