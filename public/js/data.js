@@ -1,3 +1,9 @@
+const optionSelect = [];
+function isOptionSelect() {
+  return optionSelect.length !== 0;
+}
+let question = null;
+
 function pushQuestion(i, game) {
   game.scene.pause("PlayGame");
 
@@ -5,12 +11,12 @@ function pushQuestion(i, game) {
     keyboard: false
   });
 
-  const question = questionData[i];
+  question = questionData[i];
 
   // game.scene.start("PlayGame");
 
   const questionNo = document.getElementById("questionNo");
-  questionNo.innerHTML = `<div>Question ${i + 1}</div>`;
+  questionNo.innerHTML = `<div>Now you died answer the question to respan</div>`;
   const questions = document.getElementById("question");
   questions.innerHTML = `<div>${question.question}</div>`;
 
@@ -19,21 +25,35 @@ function pushQuestion(i, game) {
   const p = question.option.map((e, id) => {
     return `<div id=${id} onClick="check(${id},${
       question.correctoption
-    })" class="btn btn-primary btn-block">${e}</div>`;
+    })" class="btn btn-info btn-block">${e}</div>`;
   });
 
   option.innerHTML = p.join(" ");
-
-  //   setTimeout(() => {
-  //     callback(true);
-  //   }, 1000);
 }
 
 function check(e, option, callback) {
   const element = document.getElementById(e);
-  if (e === option) {
-    element.classList.add("btn-success");
+  element.classList.remove("btn-info");
+  element.classList.add("btn-primary");
+  if (optionSelect.length === 0) {
+    optionSelect.push(e);
   } else {
-    element.classList.add("btn-danger");
+    const elementToRemove = document.getElementById(optionSelect[0]);
+    elementToRemove.classList.remove("btn-primary");
+    elementToRemove.classList.add("btn-info");
+    optionSelect.pop();
+    optionSelect.push(e);
   }
+
+  // if (optionSelect[0] === option) {
+  //   console.log("correct");
+  // } else {
+  //   console.log("wronh");
+  // }
+}
+
+function sumbit() {
+  console.log("i am clicked and ");
+  console.log(optionSelect);
+  console.log(question);
 }
