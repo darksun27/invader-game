@@ -56,7 +56,7 @@ while (nums.size !== 6) {
 }
 
 let array = [...nums];
-let i = array.length - 1;
+let i = 0;
 
 function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -306,14 +306,14 @@ function collisionHandler(bullet, alien) {
   //  When a bullet hits an alien we kill them both
 
   console.log("collisison");
-  if (i >= 0) {
+  if (i <= array.length - 1) {
     game.paused = true;
     pushQuestion(i, game, isTrue => {
       if (isTrue) {
         callback(bullet, alien);
       }
     });
-    i = i - 1;
+    i = i + 1;
   }
 }
 
