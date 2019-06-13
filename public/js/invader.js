@@ -39,6 +39,10 @@ class playGame extends Phaser.Scene {
   preload() {
     this.load.image("platform", "assets/platform.png");
     this.load.image("player", "assets/player.png");
+    this.load.spritesheet("dude", "assets/dude.png", {
+      frameWidth: 32,
+      frameHeight: 48
+    });
   }
   create() {
     // group with all active platforms.
@@ -68,7 +72,7 @@ class playGame extends Phaser.Scene {
     this.player = this.physics.add.sprite(
       gameOptions.playerStartPosition,
       game.config.height / 2,
-      "player"
+      "dude"
     );
     this.player.setGravityY(gameOptions.playerGravity);
 
