@@ -15,7 +15,7 @@ window.onload = function() {
   // object containing configuration options
   let gameConfig = {
     type: Phaser.AUTO,
-    width: 1334,
+    width: window.innerWidth / 2,
     height: 750,
     scene: playGame,
     backgroundColor: 0x444444,
@@ -120,6 +120,7 @@ class playGame extends Phaser.Scene {
   update() {
     // game over
     if (this.player.y > game.config.height) {
+      //popups the question
       this.scene.start("PlayGame");
     }
     this.player.x = gameOptions.playerStartPosition;
