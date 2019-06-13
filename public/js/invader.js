@@ -243,8 +243,10 @@ function render() {}
 
 function collisionHandler(bullet, alien) {
   //  When a bullet hits an alien we kill them both
+
   if (i >= 0) {
-    pushQuestion(i);
+    game.paused = true;
+    pushQuestion(i, game);
     i = i - 1;
   }
 
