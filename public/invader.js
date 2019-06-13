@@ -1,4 +1,4 @@
-var game = new Phaser.Game(
+let game = new Phaser.Game(
   window.innerWidth,
   window.innerHeight,
   Phaser.AUTO,
@@ -18,27 +18,35 @@ function preload() {
   game.load.image("ship", "assets/player.png");
   game.load.spritesheet("kaboom", "assets/explode.png", 128, 128);
   game.load.image("starfield", "assets/space-1.png");
-  game.load.image("background", "assets/background2.png");
-  game.load.audio("loadSound", "assets/sound/startaudio.wav");
+  game.load.audio("loadSound", "assets/sound/startSound.mp3");
+  game.load.audio("explodeSound", "assets/sound/explode1.mp3");
+  game.load.image("button", "assets/spacebar.png");
 }
 
-var loadSound;
-var player;
-var aliens;
-var bullets;
-var bulletTime = 0;
-var cursors;
-var fireButton;
-var explosions;
-var starfield;
-var score = 0;
-var scoreString = "";
-var scoreText;
-var lives;
-var enemyBullet;
-var firingTimer = 0;
-var stateText;
-var livingEnemies = [];
+let loadSound;
+let explodeSound;
+let player;
+let aliens;
+let bullets;
+let bulletTime = 0;
+let cursors;
+let fireButton;
+let explosions;
+let starfield;
+let score = 0;
+let scoreString = "";
+let scoreText;
+let livesText;
+let lives;
+let enemyBullet;
+let firingTimer = 0;
+let stateText;
+let livingEnemies = [];
+let startGame = false;
+
+function startGameHandler() {
+  startGame = true;
+}
 
 function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -51,6 +59,14 @@ function create() {
     window.innerHeight,
     "starfield"
   );
+
+  //load sound
+  loadSound = game.add.audio("loadSound");
+  loadSound.play();
+  game.input.onDown.add(restartMusic, this);
+
+  //explode sound
+  explodeSound = game.add.audio("explodeSound");
 
   //  Our bullet group
   bullets = game.add.group();
@@ -88,26 +104,32 @@ function create() {
   scoreString = "Score : ";
   scoreText = game.add.text(10, 10, scoreString + score, {
     font: "34px Arial",
-    fill: "#fff"
+    fill: "#c51b7d"
   });
+  scoreText.stroke = "#de77ae";
+  scoreText.strokeThickness = 16;
+  scoreText.setShadow(2, 2, "#333333", 2, false, true);
 
   //  Lives
   lives = game.add.group();
-  game.add.text(game.world.width - 100, 10, "Lives : ", {
+  livesText = game.add.text(game.world.width - 100, 10, "Lives : ", {
     font: "34px Arial",
-    fill: "#fff"
+    fill: "#c51b7d"
   });
+  livesText.stroke = "#de77ae";
+  livesText.strokeThickness = 16;
+  livesText.setShadow(2, 2, "#333333", 2, false, true);
 
   //  Text
   stateText = game.add.text(game.world.centerX, game.world.centerY, " ", {
     font: "84px Arial",
-    fill: "#fff"
+    fill: "#c51b7d"
   });
   stateText.anchor.setTo(0.5, 0.5);
   stateText.visible = false;
 
-  for (var i = 0; i < 3; i++) {
-    var ship = lives.create(game.world.width - 100 + 30 * i, 60, "ship");
+  for (let i = 0; i < 3; i++) {
+    let ship = lives.create(game.world.width - 100 + 30 * i, 60, "ship");
     ship.anchor.setTo(0.5, 0.5);
     ship.angle = 90;
     ship.alpha = 0.4;
@@ -124,9 +146,9 @@ function create() {
 }
 
 function createAliens() {
-  for (var y = 0; y < 4; y++) {
-    for (var x = 0; x < 10; x++) {
-      var alien = aliens.create(x * 48, y * 50, "invader");
+  for (let y = 0; y < 4; y++) {
+    for (let x = 0; x < 10; x++) {
+      let alien = aliens.create(x * 48, y * 50, "invader");
       alien.anchor.setTo(0.5, 0.5);
       alien.animations.add("fly", [0, 1, 2, 3], 20, true);
       alien.play("fly");
@@ -138,9 +160,9 @@ function createAliens() {
   aliens.y = 50;
 
   //  All this does is basically start the invaders moving. Notice we're moving the Group they belong to, rather than the invaders directly.
-  var tween = game.add
+  let tween = game.add
     .tween(aliens)
-    .to({ x: 200 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+    .to({ x: 600 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
 
   //  When the tween loops it calls descend
   tween.onLoop.add(descend, this);
@@ -191,15 +213,14 @@ function update() {
   }
 }
 
-function render() {
-  // for (var i = 0; i < aliens.length; i++)
-  // {
-  //     game.debug.body(aliens.children[i]);
-  // }
+function restartMusic() {
+  loadSound.restart();
 }
+function render() {}
 
 function collisionHandler(bullet, alien) {
   //  When a bullet hits an alien we kill them both
+  explodeSound.play();
   bullet.kill();
   alien.kill();
 
@@ -208,7 +229,7 @@ function collisionHandler(bullet, alien) {
   scoreText.text = scoreString + score;
 
   //  And create an explosion :)
-  var explosion = explosions.getFirstExists(false);
+  let explosion = explosions.getFirstExists(false);
   explosion.reset(alien.body.x, alien.body.y);
   explosion.play("kaboom", 30, false, true);
 
@@ -235,7 +256,7 @@ function enemyHitsPlayer(player, bullet) {
   }
 
   //  And create an explosion :)
-  var explosion = explosions.getFirstExists(false);
+  let explosion = explosions.getFirstExists(false);
   explosion.reset(player.body.x, player.body.y);
   explosion.play("kaboom", 30, false, true);
 
@@ -246,9 +267,12 @@ function enemyHitsPlayer(player, bullet) {
 
     stateText.text = " GAME OVER \n Click to restart";
     stateText.visible = true;
+    stateText.stroke = "#de77ae";
+    stateText.strokeThickness = 16;
+    stateText.setShadow(2, 2, "#333333", 2, false, true);
 
-    //the "click to restart" handler
-    game.input.onTap.addOnce(restart, this);
+    stateText.game.input.onTap //the "click to restart" handler
+      .addOnce(restart, this);
   }
 }
 
@@ -264,10 +288,10 @@ function enemyFires() {
   });
 
   if (enemyBullet && livingEnemies.length > 0) {
-    var random = game.rnd.integerInRange(0, livingEnemies.length - 1);
+    let random = game.rnd.integerInRange(0, livingEnemies.length - 1);
 
     // randomly select one of them
-    var shooter = livingEnemies[random];
+    let shooter = livingEnemies[random];
     // And fire the bullet from this enemy
     enemyBullet.reset(shooter.body.x, shooter.body.y);
 
@@ -302,6 +326,7 @@ function restart() {
   //resets the life count
   lives.callAll("revive");
   //  And brings the aliens back from the dead :)
+  game.stage.backGroundColor = "#182d3b";
   aliens.removeAll();
   createAliens();
 
