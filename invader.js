@@ -1,9 +1,15 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, "phaser-example", {
-  preload: preload,
-  create: create,
-  update: update,
-  render: render
-});
+var game = new Phaser.Game(
+  window.innerWidth,
+  window.innerHeight,
+  Phaser.AUTO,
+  "phaser-example",
+  {
+    preload: preload,
+    create: create,
+    update: update,
+    render: render
+  }
+);
 
 function preload() {
   game.load.image("bullet", "assets/bullet.png");
@@ -12,7 +18,12 @@ function preload() {
   game.load.image("ship", "assets/player.png");
   game.load.spritesheet("kaboom", "assets/explode.png", 128, 128);
   game.load.image("starfield", "assets/starfield.png");
-  game.load.image("background", "assets/background2.png");
+  game.load.image(
+    "background",
+    "assets/background2.png",
+    window.innerWidth,
+    window.innerHeight
+  );
 }
 
 var player;
