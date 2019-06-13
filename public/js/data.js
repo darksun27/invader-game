@@ -1,6 +1,4 @@
-const nums = new Set();
-while (nums.size !== 10) {
-  nums.add(Math.floor(Math.random() * 10) + 1);
+function pushQuestion(array, i) {
+  console.log(question);
+  console.log(i, question[array[i]]);
 }
-
-console.log(question[[...nums](0)]);

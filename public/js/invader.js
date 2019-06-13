@@ -50,6 +50,14 @@ let pad = null;
 let stick = null;
 let buttonA = null;
 
+let nums = new Set();
+while (nums.size !== 6) {
+  nums.add(Math.floor(Math.random() * 6) + 1);
+}
+
+let array = [...nums];
+let i = array.length - 1;
+
 function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -235,6 +243,11 @@ function render() {}
 
 function collisionHandler(bullet, alien) {
   //  When a bullet hits an alien we kill them both
+  if (i >= 0) {
+    pushQuestion(array, i);
+    i = i - 1;
+  }
+
   explodeSound.play();
   bullet.kill();
   alien.kill();
