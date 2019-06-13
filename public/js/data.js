@@ -1,6 +1,7 @@
-function pushQuestion(i, game) {
+function pushQuestion(i, game, callback) {
   console.log(question);
   console.log(i, question[i]);
+  console.log("push queston");
 
   $("#myModal").modal({
     keyboard: false
