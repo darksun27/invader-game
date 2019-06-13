@@ -225,6 +225,7 @@ function update() {
     }
 
     //  Run collision
+
     game.physics.arcade.overlap(bullets, aliens, collisionHandler, null, this);
     game.physics.arcade.overlap(
       enemyBullets,
@@ -241,12 +242,9 @@ function restartMusic() {
 }
 function render() {}
 
-function collisionHandler(bullet, alien) {
-  //  When a bullet hits an alien we kill them both
-  if (i >= 0) {
-    pushQuestion(i);
-    i = i - 1;
-  }
+function callback(bullet, alien) {
+  console.log("inside callback");
+  game.paused = false;
 
   explodeSound.play();
   bullet.kill();
@@ -301,6 +299,21 @@ function enemyHitsPlayer(player, bullet) {
 
     stateText.game.input.onTap //the "click to restart" handler
       .addOnce(restart, this);
+  }
+}
+
+function collisionHandler(bullet, alien) {
+  //  When a bullet hits an alien we kill them both
+
+  console.log("collisison");
+  if (i >= 0) {
+    game.paused = true;
+    pushQuestion(i, game, isTrue => {
+      if (isTrue) {
+        callback(bullet, alien);
+      }
+    });
+    i = i - 1;
   }
 }
 
