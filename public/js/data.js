@@ -6,5 +6,22 @@ function pushQuestion(i, game) {
     keyboard: false
   });
 
-  const question = document.getElementById("question");
+  const questionNo = document.getElementById("questionNo");
+  questionNo.innerHTML = `<div>Question ${i}</div>`;
+  const questions = document.getElementById("question");
+  questions.innerHTML = `<div>${question[i].question}</div>`;
+
+  const option = document.getElementById("option-btn");
+
+  const p = question[i].option.map((e, id) => {
+    return `<div id=${id} onClick="check(${id},${
+      question[i].correctoption
+    })" class="btn btn-primary btn-block">${e}</div>`;
+  });
+
+  option.innerHTML = p.join(" ");
+}
+
+function check(e, option) {
+  console.log(e === option);
 }

@@ -27,7 +27,12 @@ var question = [
   },
   {
     question: "Inside which HTML element do we put the JavaScript?",
-    option: ["<script>", "<js>", "<javascript>", "<scripting>"],
+    option: [
+      "&lt;script&gt;",
+      "&lt;js&gt;",
+      "&lt;javascript&gt;",
+      "&lt;scripting&gt;"
+    ],
     hint: "Javascript is a scripting language which runs on scripts",
     correctoption: 0
   },
@@ -35,12 +40,12 @@ var question = [
     question:
       "What is the correct syntax for referring to an external script called &quot;xxx.js&quot;?",
     option: [
-      "<script name = “xxx.js”>",
-      "<script href = “xxx.js”>",
-      "<script src=”xxx.js”>",
-      "<script import=”xxx.js”>"
+      "&lt;script name = “xxx.js”&gt;",
+      "&lt;script href = “xxx.js”&gt;",
+      "&lt;script src=”xxx.js”&gt;",
+      "&lt;script import=”xxx.js”&gt;"
     ],
     hint: "Javascript is a scripting language which runs on scripts",
-    correctoption: 0
+    correctoption: 2
   }
 ];
