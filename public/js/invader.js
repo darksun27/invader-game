@@ -106,6 +106,8 @@ class playGame extends Phaser.Scene {
 
   collectStar(player, star) {
     star.disableBody(true, true);
+    pushQuestion(this.i, game);
+
     this.coins = this.coins + 50;
     this.scoreText.setText("Score:" + this.coins);
   }
