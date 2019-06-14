@@ -1,4 +1,4 @@
-const optionSelect = [];
+let optionSelect = [];
 
 function isOptionSelect() {
   return optionSelect.length !== 0;
@@ -71,6 +71,8 @@ async function sumbit() {
   const id = game.scene.getScene("PlayGame").id;
 
   await userRef.child(id).ref.update({ coins, id, name });
+
+  optionSelect = [];
 
   if (selectOption === question.correctoption) {
     //game should be resumed this need to handled
