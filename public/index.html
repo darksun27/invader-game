@@ -31,6 +31,29 @@
     <!-- Modal -->
     <div
       class="modal fade"
+      id="firebase"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="modal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="nickname">Enter your Nickname: </h5>
+          </div>
+          <div class="modal-body">
+            <input type="text" id="name" value=""></div>
+          </div>
+          <button id="button" onfocus="register();" type="button" class="btn btn-primary push" >
+           Start Game :)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
       id="myModal"
       tabindex="-1"
       role="dialog"
@@ -55,6 +78,7 @@
       </div>
     </div>
     <canvas id="canvas"></canvas>
+    <script src="./js/nickname.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -77,5 +101,6 @@
     <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
     <script src="./js/firebase.js"></script>
+    
   </body>
 </html>

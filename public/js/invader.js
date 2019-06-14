@@ -1,4 +1,4 @@
-let game;
+var game;
 
 // global game options
 let gameOptions = {
@@ -12,7 +12,7 @@ let gameOptions = {
   jumps: 2
 };
 
-window.onload = function() {
+window.onload = () => {
   // object containing configuration options
   let gameConfig = {
     type: Phaser.AUTO,

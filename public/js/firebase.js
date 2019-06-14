@@ -10,10 +10,9 @@
   saveData();
 })();
 
+const stuRef = firebase.database();
+
 function saveData() {
-  const stuRef = firebase
-    .database()
-    .ref()
-    .child("student");
+  stuRef.ref().child("student");
   stuRef.push({ hello: "lolololoo" });
 }
