@@ -22,11 +22,12 @@ async function nameRegister() {
         const key = stuRef.push().key;
         stuRef.child(key).set({
           name: nickname,
-          coins: 0
+          coins: 0,
+          id: key
         });
         $("#firebase").modal("toggle");
         game.scene.start("PlayGame", {
-          data: { name: nickname, coins: 0 }
+          data: { name: nickname, coins: 0, id: key }
         });
       } else {
         //retreive the data from the user and started the game
@@ -38,11 +39,12 @@ async function nameRegister() {
       const key = stuRef.push().key;
       stuRef.child(key).set({
         name: nickname,
-        coins: 0
+        coins: 0,
+        id: key
       });
       $("#firebase").modal("toggle");
       game.scene.start("PlayGame", {
-        data: { name: nickname, coins: 0 }
+        data: { name: nickname, coins: 0, id: key }
       });
     }
   }
