@@ -110,8 +110,6 @@ class playGame extends Phaser.Scene {
     star.disableBody(true, true);
     pushQuestion(this.i, game, false);
 
-    this.coins = this.coins + 50;
-    this.scoreText.setText("Score:" + this.coins);
     // this.scoreText
   }
 
@@ -283,7 +281,7 @@ class playGame extends Phaser.Scene {
     }
   }
   update() {
-    console.log(this.player);
+    console.log(this.coins, "??????");
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-120);
       this.player.anims.play("left", true);

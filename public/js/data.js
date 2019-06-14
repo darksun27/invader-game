@@ -48,6 +48,18 @@ function check(e, option, callback) {
   }
 }
 
+function resumeGame(coins) {
+  let updateCoin = coins + 50;
+  game.scene.getScene("PlayGame").coins = updateCoin;
+  game.scene.getScene("PlayGame").scoreText.setText("Score:" + updateCoin);
+  game.scene.resume("PlayGame");
+}
+
+function overGame() {
+  game.scene.stop("PlayGame");
+  game.scene.start("GameOver", { coins: coins });
+}
+
 function sumbit() {
   const selectOption = optionSelect[0];
   if (selectOption === question.correctoption) {
@@ -56,13 +68,17 @@ function sumbit() {
 
     if (isDeadPlayer) {
       game.scene.getScene("PlayGame").player.y = game.config.height / 2;
-      game.scene.resume("PlayGame", { coins, coins });
+      resumeGame(coins);
     } else {
-      game.scene.resume("PlayGame", { coins, coins });
+      resumeGame(coins);
     }
   } else {
-    //u die
-    const coins = game.scene.getScene("PlayGame").coins;
-    game.scene.start("GameOver", { coins: coins });
+    if (!isDeadPlayer) {
+      resumeGame(coins);
+    } else {
+      //u die
+      const coins = game.scene.getScene("PlayGame").coins;
+      game.scene.start("GameOver", { coins: coins });
+    }
   }
 }
