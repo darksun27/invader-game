@@ -50,10 +50,15 @@ function check(e, option, callback) {
   }
 }
 
-function resumeGame(coins, isNotDead) {
+async function resumeGame(coins, isNotDead) {
   let updateCoin = isNotDead ? coins - 10 : coins + 50;
 
   game.scene.getScene("PlayGame").coins = updateCoin;
+  const name = game.scene.getScene("PlayGame").name;
+  const id = game.scene.getScene("PlayGame").id;
+  const userRef = stuRef.ref;
+  await userRef.child(id).ref.update({ coins: updateCoin, id, name });
+
   game.scene.getScene("PlayGame").scoreText.setText("Score:" + updateCoin);
   game.scene.resume("PlayGame");
 }
@@ -66,20 +71,13 @@ function overGame() {
 async function sumbit() {
   const selectOption = optionSelect[0];
   if (selectOption != undefined) {
-    const userRef = stuRef.ref;
-    const name = game.scene.getScene("PlayGame").name;
     const coins = game.scene.getScene("PlayGame").coins;
-    const id = game.scene.getScene("PlayGame").id;
-
-    await userRef.child(id).ref.update({ coins, id, name });
 
     optionSelect = [];
 
     $("#myModal").modal("toggle");
     if (selectOption === question.correctoption) {
       //game should be resumed this need to handled
-      const coins = game.scene.getScene("PlayGame").coins;
-
       if (isDeadPlayer) {
         game.scene.getScene("PlayGame").player.y = game.config.height / 2;
         resumeGame(coins);
