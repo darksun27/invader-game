@@ -16,7 +16,7 @@ window.onload = function() {
   let gameConfig = {
     // object containing configuration options
     type: Phaser.AUTO,
-    width: window.innerWidth / 2,
+    width: 950,
     height: window.innerHeight,
     scene: [Register, playGame, GameOverScene],
     backgroundColor: 0x444444,
@@ -114,8 +114,12 @@ class playGame extends Phaser.Scene {
     this.music = this.sound.add("theme");
     this.death = this.sound.add("death");
     this.music.play();
-    this.add.image(400, 300, "sky");
+    let image = this.add.image(400, 300, "sky");
 
+    let scaleX = this.cameras.main.width / image.width;
+    let scaleY = this.cameras.main.height / image.height;
+    let scale = Math.max(scaleX, scaleY);
+    image.setScale(4).setScrollFactor(0);
     // group with all active platforms.
     this.platformGroup = this.add.group({
       // once a platform is removed, it's added to the pool
