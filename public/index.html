@@ -22,8 +22,19 @@
         margin: 0;
         position: absolute;
         top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        left: 0%;
+        transform: translate(0%, -50%);
+      }
+      #leaderboard {
+        display: block;
+        margin: 0;
+        position: absolute;
+        background: #fff;
+        top: 50%;
+        right: 0%;
+        transform: translate(0%, -50%);
+        width: 50%;
+        height: 100vh;
       }
     </style>
   </head>
@@ -92,6 +103,7 @@
       </div>
     </div>
     <canvas id="canvas"></canvas>
+    <div id="leaderboard"></div>
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
