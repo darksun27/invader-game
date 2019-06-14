@@ -1,7 +1,9 @@
 const optionSelect = [];
+
 function isOptionSelect() {
   return optionSelect.length !== 0;
 }
+
 let question = null;
 let isDeadPlayer = null;
 
@@ -9,16 +11,16 @@ function pushQuestion(i, game, isDead) {
   game.scene.pause("PlayGame");
   isDeadPlayer = isDead;
 
-  $("#myModal").modal({
-    keyboard: false
-  });
+  $("#myModal").modal({ backdrop: "static", keyboard: true });
 
   question = questionData[i];
 
   // game.scene.start("PlayGame");
 
   const questionNo = document.getElementById("questionNo");
-  questionNo.innerHTML = `<div>Now you died answer the question to respan</div>`;
+  questionNo.innerHTML = isDead
+    ? `<div>Now you died answer the question to respan</div>`
+    : `<div>Answer this question to move ahead</div>`;
   const questions = document.getElementById("question");
   questions.innerHTML = `<div>${question.question}</div>`;
 

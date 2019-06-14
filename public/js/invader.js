@@ -81,7 +81,6 @@ class playGame extends Phaser.Scene {
   }
 
   init(data) {
-    console.log(data);
     this.coins = data["data"].coins || 0;
     this.name = data["data"].name;
     this.i = 0;

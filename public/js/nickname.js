@@ -25,7 +25,7 @@ async function nameRegister() {
           coins: 0,
           id: key
         });
-        $("#firebase").modal("toggle");
+        $("#firebase").modal({ backdrop: "static", keyboard: true });
         game.scene.start("PlayGame", {
           data: { name: nickname, coins: 0, id: key }
         });
