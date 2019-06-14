@@ -85,8 +85,10 @@ class playGame extends Phaser.Scene {
     super("PlayGame");
   }
 
-  init() {
+  init(data) {
+    const coins = data.coins;
     this.coins = 0;
+    this.i = 0;
   }
 
   preload() {
@@ -132,7 +134,6 @@ class playGame extends Phaser.Scene {
 
     // number of consecutive jumps made by the player
     this.playerJumps = 0;
-    this.i = 0;
 
     // adding a platform to the game, the arguments are platform width and x position
     this.addPlatform(game.config.width, game.config.width / 2);
