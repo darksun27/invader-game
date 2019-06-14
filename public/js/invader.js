@@ -18,7 +18,7 @@ window.onload = function() {
     type: Phaser.AUTO,
     width: window.innerWidth / 2,
     height: window.innerHeight,
-    scene: [playGame, GameOverScene],
+    scene: [Register, playGame, GameOverScene],
     backgroundColor: 0x444444,
 
     // physics settings
@@ -86,9 +86,10 @@ class playGame extends Phaser.Scene {
   }
 
   init(data) {
-    const coins = data.coins;
+    console.log(data);
+    const coins = data.coins || 0;
     this.coins = coins;
-    this.name = data["data"].name;
+    this.name = data["data"].name || null;
     this.i = 0;
   }
 

@@ -20,11 +20,11 @@ async function nameRegister() {
       // new user is created when the name is not in the db
       const key = stuRef.push().key;
       stuRef.child(key).set({
-        playerName: nickname,
+        name: nickname,
         coins: 0
       });
       $("#firebase").modal("toggle");
-      game.scene.start("PlayGame");
+      game.scene.start("PlayGame", { data: { name: nickname, coins: 0 } });
     } else {
       //retreive the data from the user and started the game
       $("#firebase").modal("toggle");
