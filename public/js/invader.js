@@ -84,9 +84,8 @@ class playGame extends Phaser.Scene {
     this.load.audio("theme", "assets/sound/startSound.mp3");
     this.load.audio("death", "assets/sound/explode1.mp3");
   }
-  // cursors = null;
 
-  collectStar(player, start) {
+  collectStar(player, star) {
     star.disableBody(true, true);
     this.coins = this.coins + 50;
   }
