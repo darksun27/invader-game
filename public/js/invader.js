@@ -286,7 +286,7 @@ class playGame extends Phaser.Scene {
       this.player.anims.play("turn");
     }
 
-    if (this.cursors.up.isDown && this.player.body.touching.down) {
+    if (this.cursors.space.isDown && this.player.body.touching.down) {
       this.player.setVelocityY(-600);
     }
     // game over
