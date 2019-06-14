@@ -92,6 +92,7 @@ class playGame extends Phaser.Scene {
     this.load.image("star", "assets/coin.png");
     this.load.image("sky", "assets/sky.png");
     this.load.image("player", "assets/player.png");
+    this.load.image("ques", "assets/question.png");
     this.load.spritesheet("dude", "assets/dude.png", {
       frameWidth: 32,
       frameHeight: 48
@@ -102,9 +103,11 @@ class playGame extends Phaser.Scene {
 
   collectStar(player, star) {
     star.disableBody(true, true);
-    pushQuestion(this.i, game, false);
-
     // this.scoreText
+  }
+  collectQues(player, ques) {
+    ques.disableBody(true, true);
+    pushQuestion(this.i, game, false);
   }
 
   create() {
@@ -145,12 +148,29 @@ class playGame extends Phaser.Scene {
       }
     });
 
+    // group with all active platforms.
+    this.quesGroup = this.add.group({
+      // once a platform is removed, it's added to the pool
+      removeCallback: function(ques) {
+        ques.scene.quesPool.add(ques);
+      }
+    });
+
+    // pool
+    this.quesPool = this.add.group({
+      // once a platform is removed from the pool, it's added to the active platforms group
+      removeCallback: function(ques) {
+        ques.scene.quesGroup.add(ques);
+      }
+    });
+
     // number of consecutive jumps made by the player
     this.playerJumps = 0;
 
     // adding a platform to the game, the arguments are platform width and x position
     this.addPlatform(game.config.width, game.config.width / 2);
     this.addCoins(game.config.width, game.config.width / 2);
+    this.addQues(game.config.width, game.config.width / 2);
 
     // adding the player;
     this.player = this.physics.add.sprite(
@@ -195,10 +215,18 @@ class playGame extends Phaser.Scene {
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup);
     this.physics.add.collider(this.coinGroup, this.platformGroup);
+    this.physics.add.collider(this.quesGroup, this.platformGroup);
     this.physics.add.overlap(
       this.player,
       this.coinGroup,
       this.collectStar,
+      null,
+      this
+    );
+    this.physics.add.overlap(
+      this.player,
+      this.quesGroup,
+      this.collectQues,
       null,
       this
     );
@@ -242,7 +270,7 @@ class playGame extends Phaser.Scene {
       this.coinPool.remove(coin);
     } else {
       coin = this.physics.add.sprite(
-        posX * 2,
+        posX * 1.5,
         game.config.height * 0.7,
         "star"
       );
@@ -255,6 +283,34 @@ class playGame extends Phaser.Scene {
     coin.displayWidth = 40;
     coin.displayHeight = 40;
     this.nextCoinDistance = Phaser.Math.Between(
+      gameOptions.spawnRange[0],
+      gameOptions.spawnRange[1]
+    );
+  }
+
+  addQues(platformWidth, posX) {
+    let ques;
+    if (this.quesPool.getLength()) {
+      ques = this.quesPool.getFirst();
+      ques.x = posX;
+      ques.active = true;
+      ques.visible = true;
+      this.quesPool.remove(ques);
+    } else {
+      ques = this.physics.add.sprite(
+        posX * 2,
+        game.config.height * 0.7,
+        "ques"
+      );
+
+      ques.setImmovable(true);
+      ques.body.setAllowGravity(false);
+      ques.setVelocityX(gameOptions.platformStartSpeed * -1);
+      this.quesGroup.add(ques);
+    }
+    ques.displayWidth = 40;
+    ques.displayHeight = 40;
+    this.nextQuesDistance = Phaser.Math.Between(
       gameOptions.spawnRange[0],
       gameOptions.spawnRange[1]
     );
@@ -323,6 +379,15 @@ class playGame extends Phaser.Scene {
       }
     }, this);
 
+    this.quesGroup.getChildren().forEach(function(ques) {
+      let quesDistance = game.config.width - ques.x - ques.displayWidth / 2;
+      minDistance2 = Math.min(minDistance2, quesDistance);
+      if (ques.x < -ques.displayWidth / 2) {
+        this.quesGroup.killAndHide(ques);
+        this.quesGroup.remove(ques);
+      }
+    }, this);
+
     // adding new platforms
     if (minDistance > this.nextPlatformDistance) {
       var nextPlatformWidth = Phaser.Math.Between(
@@ -340,6 +405,14 @@ class playGame extends Phaser.Scene {
         gameOptions.platformSizeRange[1]
       );
       this.addCoins(nextCoinWidth, game.config.width + nextCoinWidth / 2);
+    }
+
+    if (minDistance2 > this.nextQuesDistance) {
+      var nextQuesWidth = Phaser.Math.Between(
+        gameOptions.platformSizeRange[0],
+        gameOptions.platformSizeRange[1]
+      );
+      this.addQues(nextQuesWidth, game.config.width + nextQuesWidth / 2);
     }
   }
 }
