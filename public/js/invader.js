@@ -132,11 +132,28 @@ class playGame extends Phaser.Scene {
       }
     });
 
+    // group with all active coins.
+    this.coinGroup = this.add.group({
+      // once a coin is removed, it's added to the pool
+      removeCallback: function(coin) {
+        coin.scene.coinPool.add(coin);
+      }
+    });
+
+    // pool
+    this.coinPool = this.add.group({
+      // once a coin is removed from the pool, it's added to the active coins group
+      removeCallback: function(coin) {
+        coin.scene.coinGroup.add(coin);
+      }
+    });
+
     // number of consecutive jumps made by the player
     this.playerJumps = 0;
 
     // adding a platform to the game, the arguments are platform width and x position
     this.addPlatform(game.config.width, game.config.width / 2);
+    // this.addPlatform(game.config.width, game.config.width / 2);
 
     // adding the player;
     this.player = this.physics.add.sprite(
@@ -184,6 +201,7 @@ class playGame extends Phaser.Scene {
     this.stars.children.iterate(child => {
       child.displayWidth = 40;
       child.displayHeight = 40;
+
       child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
 

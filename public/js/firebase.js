@@ -10,9 +10,3 @@
 })();
 
 let stuRef = firebase.database().ref();
-saveData();
-
-function saveData() {
-  stuRef.child("student");
-  stuRef.push({ hello: "lolololoo" });
-}
