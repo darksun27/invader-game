@@ -52,7 +52,7 @@ function check(e, option, callback) {
 
 async function resumeGame(coins, isNotDead) {
   let updateCoin = isNotDead ? coins - 10 : coins + 50;
-
+  console.log(updateCoin);
   game.scene.getScene("PlayGame").coins = updateCoin;
   const name = game.scene.getScene("PlayGame").name;
   const id = game.scene.getScene("PlayGame").id;
