@@ -87,7 +87,8 @@ class playGame extends Phaser.Scene {
 
   init(data) {
     const coins = data.coins;
-    this.coins = 0;
+    this.coins = coins;
+    this.name = data["data"].name;
     this.i = 0;
   }
 
@@ -108,6 +109,7 @@ class playGame extends Phaser.Scene {
     star.disableBody(true, true);
     this.coins = this.coins + 50;
     this.scoreText.setText("Score:" + this.coins);
+    // this.scoreText
   }
 
   create() {
@@ -163,7 +165,12 @@ class playGame extends Phaser.Scene {
     );
 
     this.scoreText = this.add.text(16, 16, "score: 0", {
-      fontSize: "32px",
+      fontSize: "16px",
+      fill: "#000"
+    });
+
+    this.playerName = this.add.text(16, 32, `Name: ${this.name}`, {
+      fontSize: "16px",
       fill: "#000"
     });
 
