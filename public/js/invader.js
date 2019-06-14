@@ -13,12 +13,12 @@ let gameOptions = {
 };
 
 window.onload = function() {
-  // object containing configuration options
   let gameConfig = {
+    // object containing configuration options
     type: Phaser.AUTO,
     width: window.innerWidth / 2,
     height: window.innerHeight,
-    scene: playGame,
+    scene: [playGame, GameOverScene],
     backgroundColor: 0x444444,
 
     // physics settings
@@ -38,6 +38,29 @@ window.onload = function() {
 
 //variables
 // let cursor = null;
+
+// GameOver Scene
+class GameOverScene extends Phaser.Scene {
+  constructor(data) {
+    super("GameOver");
+  }
+
+  init(data) {
+    this.data = data;
+  }
+
+  preload() {
+    this.load.image("background_image", "assets/sky.png");
+  }
+
+  create() {
+    let background = this.add.sprite(0, 0, "background_image");
+    background.setOrigin(0, 0);
+    this.add.text("50", "50", "GameOver");
+    this.add.text("50", "80", "You Lose");
+    this.add.text("50", "100", `You Get ${this.data.coins} coins`);
+  }
+}
 
 // playGame scene
 class playGame extends Phaser.Scene {
@@ -132,7 +155,6 @@ class playGame extends Phaser.Scene {
     this.stars.children.iterate(child => {
       child.displayWidth = 40;
       child.displayHeight = 40;
-      console.log(Phaser.Math);
       child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
 

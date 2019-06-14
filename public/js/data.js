@@ -44,16 +44,16 @@ function check(e, option, callback) {
     optionSelect.pop();
     optionSelect.push(e);
   }
-
-  // if (optionSelect[0] === option) {
-  //   console.log("correct");
-  // } else {
-  //   console.log("wronh");
-  // }
 }
 
 function sumbit() {
-  console.log("i am clicked and ");
-  console.log(optionSelect);
-  console.log(question);
+  console.log(game);
+  const selectOption = optionSelect[0];
+  if (selectOption === question.correctoption) {
+    //game should be resumed this need to handled
+    game.scene.start("PlayGame");
+  } else {
+    //u die
+    game.scene.start("GameOver", { coins: 700 });
+  }
 }
