@@ -247,7 +247,6 @@ class playGame extends Phaser.Scene {
         game.config.height * 0.7,
         "star"
       );
-      console.log(coin);
 
       coin.setImmovable(true);
       coin.body.setAllowGravity(false);
@@ -276,7 +275,6 @@ class playGame extends Phaser.Scene {
     }
   }
   update() {
-    console.log(this.coins, "??????");
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-120);
       this.player.anims.play("left", true);

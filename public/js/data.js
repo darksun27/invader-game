@@ -50,7 +50,7 @@ function check(e, option, callback) {
 
 function resumeGame(coins, isNotDead) {
   let updateCoin = isNotDead ? coins - 10 : coins + 50;
-
+  console.log(updateCoin);
   game.scene.getScene("PlayGame").coins = updateCoin;
   game.scene.getScene("PlayGame").scoreText.setText("Score:" + updateCoin);
   game.scene.resume("PlayGame");
@@ -71,6 +71,8 @@ async function sumbit() {
   await userRef.child(id).ref.update({ coins, id, name });
 
   if (selectOption === question.correctoption) {
+    console.log("correct");
+
     //game should be resumed this need to handled
     const coins = game.scene.getScene("PlayGame").coins;
 
