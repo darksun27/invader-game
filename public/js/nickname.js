@@ -1,4 +1,6 @@
 async function nameRegister() {
+  $("#firebase").modal({ backdrop: "static", keyboard: true });
+
   let nickname = document.querySelector("#name").value;
   if (nickname === "") {
     alert("please Enter your nick name below and compete with other :)");

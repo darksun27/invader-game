@@ -1,7 +1,9 @@
-const optionSelect = [];
+let optionSelect = [];
+
 function isOptionSelect() {
   return optionSelect.length !== 0;
 }
+
 let question = null;
 let isDeadPlayer = null;
 
@@ -9,16 +11,16 @@ function pushQuestion(i, game, isDead) {
   game.scene.pause("PlayGame");
   isDeadPlayer = isDead;
 
-  $("#myModal").modal({
-    keyboard: false
-  });
+  $("#myModal").modal({ backdrop: "static", keyboard: true });
 
   question = questionData[i];
 
   // game.scene.start("PlayGame");
 
   const questionNo = document.getElementById("questionNo");
-  questionNo.innerHTML = `<div>Now you died answer the question to respan</div>`;
+  questionNo.innerHTML = isDead
+    ? `<div>Now you died answer the question to respan</div>`
+    : `<div>Answer this question to move ahead</div>`;
   const questions = document.getElementById("question");
   questions.innerHTML = `<div>${question.question}</div>`;
 
@@ -63,32 +65,37 @@ function overGame() {
 
 async function sumbit() {
   const selectOption = optionSelect[0];
-  const userRef = stuRef.ref;
-  const name = game.scene.getScene("PlayGame").name;
-  const coins = game.scene.getScene("PlayGame").coins;
-  const id = game.scene.getScene("PlayGame").id;
-
-  await userRef.child(id).ref.update({ coins, id, name });
-
-  if (selectOption === question.correctoption) {
-    console.log("correct");
-
-    //game should be resumed this need to handled
+  if (selectOption != undefined) {
+    const userRef = stuRef.ref;
+    const name = game.scene.getScene("PlayGame").name;
     const coins = game.scene.getScene("PlayGame").coins;
+    const id = game.scene.getScene("PlayGame").id;
 
-    if (isDeadPlayer) {
-      game.scene.getScene("PlayGame").player.y = game.config.height / 2;
-      resumeGame(coins);
+    await userRef.child(id).ref.update({ coins, id, name });
+
+    optionSelect = [];
+
+    $("#myModal").modal("toggle");
+    if (selectOption === question.correctoption) {
+      //game should be resumed this need to handled
+      const coins = game.scene.getScene("PlayGame").coins;
+
+      if (isDeadPlayer) {
+        game.scene.getScene("PlayGame").player.y = game.config.height / 2;
+        resumeGame(coins);
+      } else {
+        resumeGame(coins);
+      }
     } else {
-      resumeGame(coins);
+      if (!isDeadPlayer) {
+        resumeGame(coins, !isDeadPlayer);
+      } else {
+        //u die
+        const coins = game.scene.getScene("PlayGame").coins;
+        game.scene.start("GameOver", { coins: coins });
+      }
     }
   } else {
-    if (!isDeadPlayer) {
-      resumeGame(coins, !isDeadPlayer);
-    } else {
-      //u die
-      const coins = game.scene.getScene("PlayGame").coins;
-      game.scene.start("GameOver", { coins: coins });
-    }
+    window.alert("Please select a option");
   }
 }
