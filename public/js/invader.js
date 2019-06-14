@@ -3,7 +3,7 @@ var game;
 // global game options
 let gameOptions = {
   platformStartSpeed: 300,
-  spawnRange: [100, 350],
+  spawnRange: [100, 300],
   platformSizeRange: [50, 250],
   playerGravity: 900,
   // starsGravity: 1200,
@@ -18,7 +18,7 @@ window.onload = function() {
     type: Phaser.AUTO,
     width: window.innerWidth / 2,
     height: window.innerHeight,
-    scene: [Register, playGame, GameOverScene],
+    scene: [playGame, GameOverScene],
     backgroundColor: 0x444444,
 
     // physics settings
@@ -87,6 +87,7 @@ class playGame extends Phaser.Scene {
 
   init() {
     this.coins = 0;
+    this.stars;
   }
 
   preload() {
@@ -130,9 +131,9 @@ class playGame extends Phaser.Scene {
       }
     });
 
-    // group with all active coins.
+    // group with all active platforms.
     this.coinGroup = this.add.group({
-      // once a coin is removed, it's added to the pool
+      // once a platform is removed, it's added to the pool
       removeCallback: function(coin) {
         coin.scene.coinPool.add(coin);
       }
@@ -140,7 +141,7 @@ class playGame extends Phaser.Scene {
 
     // pool
     this.coinPool = this.add.group({
-      // once a coin is removed from the pool, it's added to the active coins group
+      // once a platform is removed from the pool, it's added to the active platforms group
       removeCallback: function(coin) {
         coin.scene.coinGroup.add(coin);
       }
@@ -152,7 +153,7 @@ class playGame extends Phaser.Scene {
 
     // adding a platform to the game, the arguments are platform width and x position
     this.addPlatform(game.config.width, game.config.width / 2);
-    // this.addPlatform(game.config.width, game.config.width / 2);
+    this.addCoins(game.config.width, game.config.width / 2);
 
     // adding the player;
     this.player = this.physics.add.sprite(
@@ -189,27 +190,27 @@ class playGame extends Phaser.Scene {
     });
 
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.stars = this.physics.add.group({
-      key: "star",
-      repeat: 11,
-      setXY: { x: 12, y: 0, stepX: 70 }
-    });
+    // this.stars = this.physics.add.group({
+    //   key: "star",
+    //   repeat: 11,
+    //   setXY: { x: 12, y: 0, stepX: 70 }
+    // });
 
     // this.stars.setGravityY(gameOptions.starsGravity);
 
-    this.stars.children.iterate(child => {
-      child.displayWidth = 40;
-      child.displayHeight = 40;
+    // this.stars.children.iterate(child => {
+    //   child.displayWidth = 40;
+    //   child.displayHeight = 40;
 
-      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-    });
+    //   child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    // });
 
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup);
-    this.physics.add.collider(this.stars, this.platformGroup);
+    this.physics.add.collider(this.coinGroup, this.platformGroup);
     this.physics.add.overlap(
       this.player,
-      this.stars,
+      this.coinGroup,
       this.collectStar,
       null,
       this
@@ -231,6 +232,7 @@ class playGame extends Phaser.Scene {
         game.config.height * 0.8,
         "platform"
       );
+
       platform.setImmovable(true);
       platform.body.setAllowGravity(false);
       platform.setVelocityX(gameOptions.platformStartSpeed * -1);
@@ -238,6 +240,35 @@ class playGame extends Phaser.Scene {
     }
     platform.displayWidth = platformWidth;
     this.nextPlatformDistance = Phaser.Math.Between(
+      gameOptions.spawnRange[0],
+      gameOptions.spawnRange[1]
+    );
+  }
+
+  addCoins(platformWidth, posX) {
+    let coin;
+    if (this.coinPool.getLength()) {
+      coin = this.coinPool.getFirst();
+      coin.x = posX;
+      coin.active = true;
+      coin.visible = true;
+      this.coinPool.remove(coin);
+    } else {
+      coin = this.physics.add.sprite(
+        posX * 2,
+        game.config.height * 0.7,
+        "star"
+      );
+      console.log(coin);
+
+      coin.setImmovable(true);
+      coin.body.setAllowGravity(false);
+      coin.setVelocityX(gameOptions.platformStartSpeed * -1);
+      this.coinGroup.add(coin);
+    }
+    coin.displayWidth = 40;
+    coin.displayHeight = 40;
+    this.nextCoinDistance = Phaser.Math.Between(
       gameOptions.spawnRange[0],
       gameOptions.spawnRange[1]
     );
@@ -296,6 +327,17 @@ class playGame extends Phaser.Scene {
       }
     }, this);
 
+    let minDistance2 = game.config.width;
+
+    this.coinGroup.getChildren().forEach(function(coin) {
+      let coinDistance = game.config.width - coin.x - coin.displayWidth / 2;
+      minDistance2 = Math.min(minDistance2, coinDistance);
+      if (coin.x < -coin.displayWidth / 2) {
+        this.coinGroup.killAndHide(coin);
+        this.coinGroup.remove(coin);
+      }
+    }, this);
+
     // adding new platforms
     if (minDistance > this.nextPlatformDistance) {
       var nextPlatformWidth = Phaser.Math.Between(
@@ -306,6 +348,13 @@ class playGame extends Phaser.Scene {
         nextPlatformWidth,
         game.config.width + nextPlatformWidth / 2
       );
+    }
+    if (minDistance2 > this.nextCoinDistance) {
+      var nextCoinWidth = Phaser.Math.Between(
+        gameOptions.platformSizeRange[0],
+        gameOptions.platformSizeRange[1]
+      );
+      this.addCoins(nextCoinWidth, game.config.width + nextCoinWidth / 2);
     }
   }
 }
