@@ -48,8 +48,9 @@ function check(e, option, callback) {
   }
 }
 
-function resumeGame(coins = 0) {
-  let updateCoin = coins + 50;
+function resumeGame(coins, isNotDead) {
+  let updateCoin = isNotDead ? coins - 10 : coins + 50;
+
   game.scene.getScene("PlayGame").coins = updateCoin;
   game.scene.getScene("PlayGame").scoreText.setText("Score:" + updateCoin);
   game.scene.resume("PlayGame");
@@ -81,7 +82,7 @@ async function sumbit() {
     }
   } else {
     if (!isDeadPlayer) {
-      resumeGame();
+      resumeGame(coins, !isDeadPlayer);
     } else {
       //u die
       const coins = game.scene.getScene("PlayGame").coins;
