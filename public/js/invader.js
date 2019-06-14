@@ -2,10 +2,11 @@ let game;
 
 // global game options
 let gameOptions = {
-  platformStartSpeed: 350,
+  platformStartSpeed: 300,
   spawnRange: [100, 350],
   platformSizeRange: [50, 250],
   playerGravity: 900,
+  // starsGravity: 1200,
   jumpForce: 400,
   playerStartPosition: 200,
   jumps: 2
@@ -16,13 +17,17 @@ window.onload = function() {
   let gameConfig = {
     type: Phaser.AUTO,
     width: window.innerWidth / 2,
-    height: 750,
+    height: window.innerHeight,
     scene: playGame,
     backgroundColor: 0x444444,
 
     // physics settings
     physics: {
-      default: "arcade"
+      default: "arcade",
+      arcade: {
+        gravity: { y: 300 },
+        debug: false
+      }
     }
   };
   game = new Phaser.Game(gameConfig);
@@ -31,6 +36,9 @@ window.onload = function() {
   window.addEventListener("resize", resize, false);
 };
 
+//variables
+// let cursor = null;
+
 // playGame scene
 class playGame extends Phaser.Scene {
   constructor() {
@@ -38,9 +46,28 @@ class playGame extends Phaser.Scene {
   }
   preload() {
     this.load.image("platform", "assets/platform.png");
+    this.load.image("star", "assets/coin.png");
+    this.load.image("sky", "assets/sky.png");
     this.load.image("player", "assets/player.png");
+    this.load.spritesheet("dude", "assets/dude.png", {
+      frameWidth: 32,
+      frameHeight: 48
+    });
+    this.load.audio("theme", "assets/sound/startSound.mp3");
+    this.load.audio("death", "assets/sound/explode1.mp3");
   }
+  // cursors = null;
+
+  collectStar() {
+    console.log("collevtinf state");
+  }
+
   create() {
+    this.music = this.sound.add("theme");
+    this.death = this.sound.add("death");
+    this.music.play();
+    this.add.image(400, 300, "sky");
+
     // group with all active platforms.
     this.platformGroup = this.add.group({
       // once a platform is removed, it's added to the pool
@@ -68,15 +95,57 @@ class playGame extends Phaser.Scene {
     this.player = this.physics.add.sprite(
       gameOptions.playerStartPosition,
       game.config.height / 2,
-      "player"
+      "dude"
     );
+
+    this.player.setBounce(0.2);
     this.player.setGravityY(gameOptions.playerGravity);
+    // this.player.setCollideWorldBounds(true);
+
+    this.anims.create({
+      key: "left",
+      frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: "turn",
+      frames: [{ key: "dude", frame: 4 }],
+      frameRate: 20
+    });
+    this.anims.create({
+      key: "right",
+      frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
+      frameRate: 10,
+      repeat: -1
+    });
+
+    this.cursors = this.input.keyboard.createCursorKeys();
+    this.stars = this.physics.add.group({
+      key: "star",
+      repeat: 11,
+      setXY: { x: 12, y: 0, stepX: 70 }
+    });
+
+    // this.stars.setGravityY(gameOptions.starsGravity);
+
+    this.stars.children.iterate(child => {
+      child.displayWidth = 40;
+      child.displayHeight = 40;
+      console.log(Phaser.Math);
+      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    });
 
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup);
-
-    // checking for input
-    this.input.on("pointerdown", this.jump, this);
+    this.physics.add.collider(this.stars, this.platformGroup);
+    this.physics.add.overlap(
+      this.player,
+      this.stars,
+      this.collectStar,
+      null,
+      this
+    );
   }
 
   // the core of the script: platform are added from the pool or created on the fly
@@ -95,6 +164,7 @@ class playGame extends Phaser.Scene {
         "platform"
       );
       platform.setImmovable(true);
+      platform.body.setAllowGravity(false);
       platform.setVelocityX(gameOptions.platformStartSpeed * -1);
       this.platformGroup.add(platform);
     }
@@ -119,11 +189,30 @@ class playGame extends Phaser.Scene {
     }
   }
   update() {
+    if (this.cursors.left.isDown) {
+      this.player.setVelocityX(-120);
+      this.player.anims.play("left", true);
+    } else if (this.cursors.right.isDown) {
+      this.player.setVelocityX(60);
+
+      this.player.anims.play("right", true);
+    } else {
+      this.player.setVelocityX(0);
+      this.player.anims.play("turn");
+    }
+
+    if (this.cursors.up.isDown && this.player.body.touching.down) {
+      this.player.setVelocityY(-600);
+    }
     // game over
     if (this.player.y > game.config.height) {
       // console.log(game);
+      this.music.pause();
+      this.death.play();
+
       pushQuestion(this.i, game);
       // this.scene.start("PlayGame");
+      // this.music.resume();
     }
     this.player.x = gameOptions.playerStartPosition;
 
