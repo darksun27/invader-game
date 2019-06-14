@@ -48,8 +48,15 @@ function check(e, option, callback) {
   }
 }
 
-function sumbit() {
+async function sumbit() {
   const selectOption = optionSelect[0];
+  const userRef = stuRef.ref;
+  const name = game.scene.getScene("PlayGame").name;
+  const coins = game.scene.getScene("PlayGame").coins;
+  const id = game.scene.getScene("PlayGame").id;
+
+  await userRef.child(id).ref.update({ coins, id, name });
+
   if (selectOption === question.correctoption) {
     //game should be resumed this need to handled
     const coins = game.scene.getScene("PlayGame").coins;

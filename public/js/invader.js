@@ -36,11 +36,6 @@ window.onload = function() {
   window.addEventListener("resize", resize, false);
 };
 
-//variables
-// let cursor = null;
-
-// GameOver Scene
-
 class Register extends Phaser.Scene {
   constructor() {
     super("register");
@@ -75,7 +70,7 @@ class GameOverScene extends Phaser.Scene {
     background.setOrigin(0, 0);
     this.add.text("50", "50", "GameOver");
     this.add.text("50", "80", "You Lose");
-    this.add.text("50", "100", `You Get ${this.data.coins} coins`);
+    this.add.text("50", "100", `Your Overall ${this.data.coins} coins`);
   }
 }
 
@@ -87,10 +82,10 @@ class playGame extends Phaser.Scene {
 
   init(data) {
     console.log(data);
-    const coins = data.coins || 0;
-    this.coins = coins;
-    this.name = data["data"].name || null;
+    this.coins = data["data"].coins || 0;
+    this.name = data["data"].name;
     this.i = 0;
+    this.id = data["data"].id;
   }
 
   preload() {
@@ -167,7 +162,7 @@ class playGame extends Phaser.Scene {
       "dude"
     );
 
-    this.scoreText = this.add.text(16, 16, "score: 0", {
+    this.scoreText = this.add.text(16, 16, `score: ${this.coins}`, {
       fontSize: "16px",
       fill: "#000"
     });
