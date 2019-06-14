@@ -67,6 +67,11 @@ class playGame extends Phaser.Scene {
   constructor() {
     super("PlayGame");
   }
+
+  init() {
+    this.coins = 0;
+  }
+
   preload() {
     this.load.image("platform", "assets/platform.png");
     this.load.image("star", "assets/coin.png");
@@ -81,9 +86,9 @@ class playGame extends Phaser.Scene {
   }
   // cursors = null;
 
-  collectStar(player, star) {
+  collectStar(player, start) {
     star.disableBody(true, true);
-    console.log("collevtinf state");
+    this.coins = this.coins + 50;
   }
 
   create() {
