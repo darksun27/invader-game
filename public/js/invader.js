@@ -18,7 +18,7 @@ window.onload = function() {
     type: Phaser.AUTO,
     width: window.innerWidth / 2,
     height: window.innerHeight,
-    scene: [playGame, GameOverScene],
+    scene: [Register, playGame, GameOverScene],
     backgroundColor: 0x444444,
 
     // physics settings
@@ -40,6 +40,23 @@ window.onload = function() {
 // let cursor = null;
 
 // GameOver Scene
+
+class Register extends Phaser.Scene {
+  constructor() {
+    super("register");
+  }
+  init() {
+    this.register = this.registerName;
+  }
+
+  create() {
+    this.register();
+  }
+  registerName() {
+    $("#firebase").modal("show");
+  }
+}
+
 class GameOverScene extends Phaser.Scene {
   constructor(data) {
     super("GameOver");
@@ -86,9 +103,10 @@ class playGame extends Phaser.Scene {
   }
   // cursors = null;
 
-  collectStar(player, start) {
+  collectStar(player, star) {
     star.disableBody(true, true);
     this.coins = this.coins + 50;
+    this.scoreText.setText("Score:" + this.coins);
   }
 
   create() {
@@ -126,6 +144,11 @@ class playGame extends Phaser.Scene {
       game.config.height / 2,
       "dude"
     );
+
+    this.scoreText = this.add.text(16, 16, "score: 0", {
+      fontSize: "32px",
+      fill: "#000"
+    });
 
     this.player.setBounce(0.2);
     this.player.setGravityY(gameOptions.playerGravity);

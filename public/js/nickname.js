@@ -1,4 +1,3 @@
-function register() {
-  console.log("asdnsahjdbdbhj");
-  $("#firebase").modal("show");
+function nameRegister() {
+  console.log("asdasd");
 }

@@ -40,13 +40,20 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="nickname">Enter your Nickname: </h5>
+            <h5 class="modal-title" id="nickname">Enter your Nickname:</h5>
           </div>
           <div class="modal-body">
-            <input type="text" id="name" value=""></div>
+            <input type="text" id="name" value="" />
           </div>
-          <button id="button" onfocus="register();" type="button" class="btn btn-primary push" >
-           Start Game :)
+        </div>
+        <div class="modal-footer">
+          <button
+            id="button"
+            onclick="nameRegister()"
+            type="button"
+            class="btn btn-primary"
+          >
+            Start Game :)
           </button>
         </div>
       </div>
@@ -85,7 +92,6 @@
       </div>
     </div>
     <canvas id="canvas"></canvas>
-    <script src="./js/nickname.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -104,10 +110,10 @@
     <script src="./data/question.js"></script>
     <script src="./js/phaser.min.js"></script>
     <script src="./js/invader.js"></script>
+    <script src="./js/nickname.js"></script>
     <script src="./js/data.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
     <script src="./js/firebase.js"></script>
-    
   </body>
 </html>

@@ -7,12 +7,12 @@
   };
 
   firebase.initializeApp(config);
-  saveData();
 })();
 
-const stuRef = firebase.database();
+let stuRef = firebase.database().ref();
+saveData();
 
 function saveData() {
-  stuRef.ref().child("student");
+  stuRef.child("student");
   stuRef.push({ hello: "lolololoo" });
 }
