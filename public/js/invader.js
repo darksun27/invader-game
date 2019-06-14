@@ -44,9 +44,23 @@ class Register extends Phaser.Scene {
     this.register = this.registerName;
   }
 
+  preload() {
+    this.load.atlas("gems", "assets/gems.png", "assets/gems.json");
+  }
   create() {
+    this.anims.create({
+      key: "everything",
+      frames: this.anims.generateFrameNames("gems"),
+      repeat: -1
+    });
+
+    this.add
+      .sprite(500, 500, "gems")
+      .setScale(3)
+      .play("everything");
     this.register();
   }
+
   registerName() {
     $("#firebase").modal("show");
   }
@@ -62,15 +76,34 @@ class GameOverScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("background_image", "assets/sky.png");
+    this.load.image("sky", "assets/sky.png");
   }
 
   create() {
-    let background = this.add.sprite(0, 0, "background_image");
-    background.setOrigin(0, 0);
-    this.add.text("50", "50", "GameOver");
-    this.add.text("50", "80", "You Lose");
-    this.add.text("50", "100", `You have Overall ${this.data.coins} coins`);
+    let image = this.add.image(600, 300, "sky");
+    image.setScale(2).setScrollFactor(0);
+
+    this.add.text(300, 200, "GAME OVER", {
+      fontSize: "64px",
+      fill: "#000",
+      fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
+    });
+    if (this.data.currentGain >= 0) {
+      this.sign = "+";
+    } else {
+      this.sign = "";
+    }
+    this.add.text(430, 320, `${this.sign}${this.data.currentGain} Gain`, {
+      fontSize: "20px",
+      fill: "#000",
+      fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
+    });
+
+    this.add.text(360, 350, `Total score =  ${this.data.coins} coins`, {
+      fontSize: "20px",
+      fill: "#000",
+      fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
+    });
   }
 }
 
@@ -85,6 +118,7 @@ class playGame extends Phaser.Scene {
     this.name = data["data"].name;
     this.i = 0;
     this.id = data["data"].id;
+    this.currentGain = 0;
   }
 
   preload() {

@@ -29,7 +29,7 @@ async function nameRegister() {
         });
         $("#firebase").modal("toggle");
         game.scene.start("PlayGame", {
-          data: { name: nickname, coins: 0, id: key }
+          data: { name: nickname, coins: 0, id: key, currentGain: 0 }
         });
       } else {
         //retreive the data from the user and started the game
@@ -46,7 +46,7 @@ async function nameRegister() {
       });
       $("#firebase").modal("toggle");
       game.scene.start("PlayGame", {
-        data: { name: nickname, coins: 0, id: key }
+        data: { name: nickname, coins: 0, id: key, currentGain: 0 }
       });
     }
   }

@@ -52,10 +52,12 @@ function check(e, option, callback) {
   }
 }
 
-async function resumeGame(coins, isNotDead) {
+async function resumeGame(coins, isNotDead, currentGain) {
   let updateCoin = isNotDead ? coins - 10 : coins + 50;
-  console.log(updateCoin);
+  let updateCurrentGain = isNotDead ? currentGain - 10 : currentGain + 50;
+
   game.scene.getScene("PlayGame").coins = updateCoin;
+  game.scene.getScene("PlayGame").currentGain = updateCurrentGain;
   const name = game.scene.getScene("PlayGame").name;
   const id = game.scene.getScene("PlayGame").id;
   const userRef = stuRef.ref;
@@ -76,6 +78,7 @@ async function sumbit() {
   const selectOption = optionSelect[0];
   if (selectOption != undefined) {
     const coins = game.scene.getScene("PlayGame").coins;
+    const currentGain = game.scene.getScene("PlayGame").currentGain;
 
     optionSelect = [];
 
@@ -84,17 +87,20 @@ async function sumbit() {
       //game should be resumed this need to handled
       if (isDeadPlayer) {
         game.scene.getScene("PlayGame").player.y = game.config.height / 2;
-        resumeGame(coins);
+        resumeGame(coins, isDeadPlayer, currentGain);
       } else {
-        resumeGame(coins);
+        resumeGame(coins, isDeadPlayer, currentGain);
       }
     } else {
       if (!isDeadPlayer) {
-        resumeGame(coins, !isDeadPlayer);
+        resumeGame(coins, !isDeadPlayer, currentGain);
       } else {
         //u die
-        const coins = game.scene.getScene("PlayGame").coins;
-        game.scene.start("GameOver", { coins: coins });
+        // const coins = game.scene.getScene("PlayGame").coins;
+        game.scene.start("GameOver", {
+          coins: coins,
+          currentGain: currentGain
+        });
       }
     }
   } else {
