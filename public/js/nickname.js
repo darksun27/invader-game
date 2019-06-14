@@ -1,4 +1,6 @@
 async function nameRegister() {
+  $("#firebase").modal({ backdrop: "static", keyboard: true });
+
   let nickname = document.querySelector("#name").value;
   if (nickname === "") {
     alert("please Enter your nick name below and compete with other :)");
@@ -25,7 +27,7 @@ async function nameRegister() {
           coins: 0,
           id: key
         });
-        $("#firebase").modal({ backdrop: "static", keyboard: true });
+        $("#firebase").modal("toggle");
         game.scene.start("PlayGame", {
           data: { name: nickname, coins: 0, id: key }
         });
