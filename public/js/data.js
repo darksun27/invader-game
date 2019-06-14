@@ -51,9 +51,11 @@ function sumbit() {
   const selectOption = optionSelect[0];
   if (selectOption === question.correctoption) {
     //game should be resumed this need to handled
-    game.scene.start("PlayGame");
+    // game.scene.start("PlayGame");
   } else {
     //u die
-    game.scene.start("GameOver", { coins: 700 });
+    const coins = game.scene.getScene("PlayGame").coins;
+
+    game.scene.start("GameOver", { coins: coins });
   }
 }
