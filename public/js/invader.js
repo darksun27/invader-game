@@ -70,7 +70,7 @@ class GameOverScene extends Phaser.Scene {
     background.setOrigin(0, 0);
     this.add.text("50", "50", "GameOver");
     this.add.text("50", "80", "You Lose");
-    this.add.text("50", "100", `Your Overall ${this.data.coins} coins`);
+    this.add.text("50", "100", `You have Overall ${this.data.coins} coins`);
   }
 }
 
