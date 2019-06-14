@@ -3,9 +3,11 @@ function isOptionSelect() {
   return optionSelect.length !== 0;
 }
 let question = null;
+let isDeadPlayer = null;
 
-function pushQuestion(i, game) {
+function pushQuestion(i, game, isDead) {
   game.scene.pause("PlayGame");
+  isDeadPlayer = isDead;
 
   $("#myModal").modal({
     keyboard: false
@@ -51,7 +53,13 @@ function sumbit() {
   if (selectOption === question.correctoption) {
     //game should be resumed this need to handled
     const coins = game.scene.getScene("PlayGame").coins;
-    game.scene.start("PlayGame", { coins, coins });
+
+    if (isDeadPlayer) {
+      game.scene.getScene("PlayGame").player.y = game.config.height / 2;
+      game.scene.resume("PlayGame", { coins, coins });
+    } else {
+      game.scene.resume("PlayGame", { coins, coins });
+    }
   } else {
     //u die
     const coins = game.scene.getScene("PlayGame").coins;

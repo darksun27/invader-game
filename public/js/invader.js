@@ -106,7 +106,7 @@ class playGame extends Phaser.Scene {
 
   collectStar(player, star) {
     star.disableBody(true, true);
-    pushQuestion(this.i, game);
+    pushQuestion(this.i, game, false);
 
     this.coins = this.coins + 50;
     this.scoreText.setText("Score:" + this.coins);
@@ -171,7 +171,6 @@ class playGame extends Phaser.Scene {
 
     this.player.setBounce(0.2);
     this.player.setGravityY(gameOptions.playerGravity);
-    // this.player.setCollideWorldBounds(true);
 
     this.anims.create({
       key: "left",
@@ -192,20 +191,6 @@ class playGame extends Phaser.Scene {
     });
 
     this.cursors = this.input.keyboard.createCursorKeys();
-    // this.stars = this.physics.add.group({
-    //   key: "star",
-    //   repeat: 11,
-    //   setXY: { x: 12, y: 0, stepX: 70 }
-    // });
-
-    // this.stars.setGravityY(gameOptions.starsGravity);
-
-    // this.stars.children.iterate(child => {
-    //   child.displayWidth = 40;
-    //   child.displayHeight = 40;
-
-    //   child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-    // });
 
     // setting collisions between the player and the platform group
     this.physics.add.collider(this.player, this.platformGroup);
@@ -290,6 +275,7 @@ class playGame extends Phaser.Scene {
     }
   }
   update() {
+    console.log(this.player);
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-120);
       this.player.anims.play("left", true);
@@ -307,12 +293,11 @@ class playGame extends Phaser.Scene {
     }
     // game over
     if (this.player.y > game.config.height) {
-      // console.log(game);
       this.music.pause();
       this.death.play();
 
-      pushQuestion(this.i, game);
-      // this.scene.start("PlayGame");
+      pushQuestion(this.i, game, true);
+
       // this.music.resume();
     }
     this.player.x = gameOptions.playerStartPosition;
