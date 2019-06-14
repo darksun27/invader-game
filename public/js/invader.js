@@ -81,7 +81,8 @@ class playGame extends Phaser.Scene {
   }
   // cursors = null;
 
-  collectStar() {
+  collectStar(player, star) {
+    star.disableBody(true, true);
     console.log("collevtinf state");
   }
 
