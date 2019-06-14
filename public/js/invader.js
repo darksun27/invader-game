@@ -3,7 +3,7 @@ var game;
 // global game options
 let gameOptions = {
   platformStartSpeed: 300,
-  spawnRange: [100, 300],
+  spawnRange: [100, 200],
   platformSizeRange: [50, 250],
   playerGravity: 900,
   // starsGravity: 1200,

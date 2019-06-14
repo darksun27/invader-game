@@ -8,6 +8,8 @@ let question = null;
 let isDeadPlayer = null;
 
 function pushQuestion(i, game, isDead) {
+  game.scene.getScene("PlayGame").i += 1;
+
   game.scene.pause("PlayGame");
   isDeadPlayer = isDead;
 
@@ -69,6 +71,8 @@ function overGame() {
 }
 
 async function sumbit() {
+  //   game.scene.getScene("PlayGame").i = +1;
+
   const selectOption = optionSelect[0];
   if (selectOption != undefined) {
     const coins = game.scene.getScene("PlayGame").coins;
