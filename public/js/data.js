@@ -50,7 +50,8 @@ function sumbit() {
   const selectOption = optionSelect[0];
   if (selectOption === question.correctoption) {
     //game should be resumed this need to handled
-    game.scene.start("PlayGame");
+    const coins = game.scene.getScene("PlayGame").coins;
+    game.scene.start("PlayGame", { coins, coins });
   } else {
     //u die
     const coins = game.scene.getScene("PlayGame").coins;
