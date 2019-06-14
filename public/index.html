@@ -32,7 +32,7 @@
     <div
       class="modal fade"
       id="firebase"
-      tabindex="-1"
+      tabindex="2"
       role="dialog"
       aria-labelledby="modal"
       aria-hidden="true"
@@ -45,16 +45,16 @@
           <div class="modal-body">
             <input type="text" id="name" value="" />
           </div>
-        </div>
-        <div class="modal-footer">
-          <button
-            id="button"
-            type="button"
-            class="btn btn-primary"
-            data-dismiss="modal"
-          >
-            Start Game :)
-          </button>
+          <div class="modal-footer">
+            <button
+              id="button"
+              onclick="nameRegister()"
+              type="button"
+              class="btn btn-primary"
+            >
+              Start Game :)
+            </button>
+          </div>
         </div>
       </div>
     </div>

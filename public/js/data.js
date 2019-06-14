@@ -47,15 +47,13 @@ function check(e, option, callback) {
 }
 
 function sumbit() {
-  console.log(game);
   const selectOption = optionSelect[0];
   if (selectOption === question.correctoption) {
     //game should be resumed this need to handled
-    // game.scene.start("PlayGame");
+    game.scene.start("PlayGame");
   } else {
     //u die
     const coins = game.scene.getScene("PlayGame").coins;
-
     game.scene.start("GameOver", { coins: coins });
   }
 }
