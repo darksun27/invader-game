@@ -21,8 +21,8 @@ function pushQuestion(i, game, isDead) {
 
   const questionNo = document.getElementById("questionNo");
   questionNo.innerHTML = isDead
-    ? `<div style={"background":"#000", "color":"#fff"}><b>Oops! You died. Answer this question to respawn</b></div>`
-    : `<div><b>Haha! Answer this question to move ahead :) </b></div>`;
+    ? `<div>Now you died answer the question to respan</div>`
+    : `<div>Answer this question to move ahead</div>`;
   const questions = document.getElementById("question");
   questions.innerHTML = `<div>${question.question}</div>`;
 
@@ -52,20 +52,25 @@ function check(e, option, callback) {
   }
 }
 
-// async function resumeGame(coins, isNotDead, currentGain) {
-//   let updateCoin = isNotDead ? coins - 10 : coins + 50;
-//   let updateCurrentGain = isNotDead ? currentGain - 10 : currentGain + 50;
+async function resumeGame(coins, isNotDead, currentGain) {
+  let updateCoin = isNotDead ? coins : coins + 50;
+  let updateCurrentGain = isNotDead ? currentGain : currentGain + 50;
 
-//   game.scene.getScene("PlayGame").coins = updateCoin;
-//   game.scene.getScene("PlayGame").currentGain = updateCurrentGain;
+  game.scene.getScene("PlayGame").coins = updateCoin;
+  game.scene.getScene("PlayGame").currentGain = updateCurrentGain;
+  const name = game.scene.getScene("PlayGame").name;
+  const id = game.scene.getScene("PlayGame").id;
+  const userRef = stuRef.ref;
+  await userRef.child(id).ref.update({ coins: updateCoin, id, name });
 
-//   game.scene.getScene("PlayGame").scoreText.setText("Score:" + updateCoin);
-// }
+  game.scene.getScene("PlayGame").scoreText.setText("Earnings:" + updateCoin);
+  game.scene.resume("PlayGame");
+}
 
-// function overGame() {
-//   game.scene.stop("PlayGame");
-//   game.scene.start("GameOver", { coins: coins });
-// }
+function overGame() {
+  game.scene.stop("PlayGame");
+  game.scene.start("GameOver", { coins: coins });
+}
 
 async function sumbit() {
   //   game.scene.getScene("PlayGame").i = +1;
@@ -73,6 +78,7 @@ async function sumbit() {
   const selectOption = optionSelect[0];
   if (selectOption != undefined) {
     const coins = game.scene.getScene("PlayGame").coins;
+    const currentGain = game.scene.getScene("PlayGame").currentGain;
 
     optionSelect = [];
 
@@ -81,17 +87,19 @@ async function sumbit() {
       //game should be resumed this need to handled
       if (isDeadPlayer) {
         game.scene.getScene("PlayGame").player.y = game.config.height / 2;
-        game.scene.resume("PlayGame");
+        resumeGame(coins, isDeadPlayer, currentGain);
       } else {
-        game.scene.resume("PlayGame");
+        resumeGame(coins, isDeadPlayer, currentGain);
       }
     } else {
       if (!isDeadPlayer) {
-        game.scene.resume("PlayGame");
+        resumeGame(coins, !isDeadPlayer, currentGain);
       } else {
         //u die
+        // const coins = game.scene.getScene("PlayGame").coins;
         game.scene.start("GameOver", {
-          coins: coins
+          coins: coins,
+          currentGain: currentGain
         });
       }
     }
