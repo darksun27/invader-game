@@ -117,7 +117,7 @@ var questionData = [
     question: "How can you add a comment in a JavaScript?",
     option: [
       "`this is the comment",
-      "<!--this is the comment-->",
+      "&lt;!--this is the comment--&gt;",
       "//this is the comment",
       "you don't have a comment"
     ],

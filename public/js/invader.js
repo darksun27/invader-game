@@ -1,10 +1,18 @@
 var game;
 
+const nums = new Set();
+while (nums.size !== questionData.length) {
+  nums.add(Math.floor(Math.random() * questionData.length) + 1);
+}
+
+const array = [...nums];
+console.log(array);
+
 // global game options
 let gameOptions = {
   platformStartSpeed: 300,
   spawnRange: [100, 200],
-  platformSizeRange: [100, 300],
+  platformSizeRange: [200, 400],
   playerGravity: 900,
   jumpForce: 400,
   playerStartPosition: 200,
@@ -99,7 +107,7 @@ class GameOverScene extends Phaser.Scene {
     image.setScale(2).setScrollFactor(0);
     robo.setScale(2).setScrollFactor(0);
     robo.setAlpha(0.1);
-    this.add.text(300, 100, "YOU DIED, GAME OVER", {
+    this.add.text(100, 100, this.data.text, {
       fontSize: "64px",
       fill: "#000",
       fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
@@ -111,7 +119,36 @@ class GameOverScene extends Phaser.Scene {
     } else {
       this.sign = "";
     }
-    this.add.text(430, 200, `${this.sign}${currentGain} Coins earned`, {
+    this.clickButton = this.add
+      .text(400, 450, "Play Again", {
+        fontSize: "30px",
+        fill: "#000",
+        stroke: "#fff",
+        strokeThickness: 12,
+        shadow: {
+          offsetX: 0,
+          offsetY: 0,
+          color: "#000",
+          blur: 0,
+          stroke: false,
+          fill: false
+        }
+      })
+      .setInteractive()
+      .on("pointerdown", () => {
+        game.scene.stop("GameOver");
+
+        game.scene.start("PlayGame", {
+          data: {
+            name: game.scene.getScene("PlayGame").name,
+            coins: game.scene.getScene("PlayGame").coins,
+            id: game.scene.getScene("PlayGame").id,
+            currentGain: 0
+          }
+        });
+      });
+
+    this.add.text(400, 200, `${this.sign}${currentGain} Coins earned`, {
       fontSize: "20px",
       fill: "#000",
       fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
@@ -129,10 +166,9 @@ class GameOverScene extends Phaser.Scene {
     });
 
     this.add
-      .sprite(490, 350, "gems")
+      .sprite(490, 320, "gems")
       .setScale(1)
       .play("everything");
-    this.register();
   }
 }
 
@@ -168,6 +204,7 @@ class playGame extends Phaser.Scene {
   async collectStar(player, star) {
     star.disableBody(true, true);
     this.coins += 5;
+    console.log(this.coins);
     this.currentGain += 5;
     const userRef = stuRef.ref;
     this.scoreText.setText("Earnings: " + this.coins);
@@ -179,7 +216,7 @@ class playGame extends Phaser.Scene {
 
   collectQues(player, ques) {
     ques.disableBody(true, true);
-    pushQuestion(this.i, game, false);
+    pushQuestion(this.i, game, false, array);
   }
 
   create() {
@@ -256,15 +293,15 @@ class playGame extends Phaser.Scene {
       "dude"
     );
 
-    this.staticCoin = this.physics.add.sprite(920, 45, "star");
+    this.staticCoin = this.physics.add.sprite(920, 50, "star");
     this.staticCoin.body.setAllowGravity(false);
     this.staticCoin.displayWidth = 40;
     this.staticCoin.displayHeight = 40;
-    this.scoreText = this.add.text(650, 32, `Earnings: ${this.coins}`, {
+    this.scoreText = this.add.text(630, 32, `Earnings: ${this.coins}`, {
       fontSize: "30px",
       fill: "#000",
       stroke: "#fff",
-      strokeThickness: 2,
+      strokeThickness: 12,
       shadow: {
         offsetX: 0,
         offsetY: 0,
@@ -279,7 +316,7 @@ class playGame extends Phaser.Scene {
       fontSize: "30px",
       fill: "#000",
       stroke: "#fff",
-      strokeThickness: 2,
+      strokeThickness: 12,
       shadow: {
         offsetX: 0,
         offsetY: 0,
@@ -427,6 +464,15 @@ class playGame extends Phaser.Scene {
     }
   }
   update() {
+    if (this.i > questionData.length - 1) {
+      game.scene.stop("PlayGame");
+
+      game.scene.start("GameOver", {
+        coins: this.coins,
+        currentGain: this.currentGain,
+        text: "YOU PLAYED WELL, HURAY"
+      });
+    }
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-120);
       this.player.anims.play("left", true);
@@ -447,7 +493,7 @@ class playGame extends Phaser.Scene {
       this.music.pause();
       this.death.play();
 
-      pushQuestion(this.i, game, true);
+      pushQuestion(this.i, game, true, array);
 
       // this.music.resume();
     }

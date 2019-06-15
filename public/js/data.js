@@ -7,22 +7,20 @@ function isOptionSelect() {
 let question = null;
 let isDeadPlayer = null;
 
-function pushQuestion(i, game, isDead) {
+function pushQuestion(i, game, isDead, array) {
   game.scene.getScene("PlayGame").i += 1;
-
   game.scene.pause("PlayGame");
   isDeadPlayer = isDead;
-
   $("#myModal").modal({ backdrop: "static", keyboard: true });
 
-  question = questionData[i];
+  const index = array[i];
 
-  // game.scene.start("PlayGame");
+  question = questionData[index - 1];
 
   const questionNo = document.getElementById("questionNo");
   questionNo.innerHTML = isDead
-    ? `<div>Now you died answer the question to respan</div>`
-    : `<div>Answer this question to move ahead</div>`;
+    ? `<div><b>Oops! Yoou died . Answer the question to respawn<b></div>`
+    : `<div><b>Haha! Answer this question to move ahead :)</b></div>`;
   const questions = document.getElementById("question");
   questions.innerHTML = `<div>${question.question}</div>`;
 
@@ -63,18 +61,11 @@ async function resumeGame(coins, isNotDead, currentGain) {
   const userRef = stuRef.ref;
   await userRef.child(id).ref.update({ coins: updateCoin, id, name });
 
-  game.scene.getScene("PlayGame").scoreText.setText("Earnings:" + updateCoin);
+  game.scene.getScene("PlayGame").scoreText.setText("Earnings: " + updateCoin);
   game.scene.resume("PlayGame");
 }
 
-function overGame() {
-  game.scene.stop("PlayGame");
-  game.scene.start("GameOver", { coins: coins });
-}
-
 async function sumbit() {
-  //   game.scene.getScene("PlayGame").i = +1;
-
   const selectOption = optionSelect[0];
   if (selectOption != undefined) {
     const coins = game.scene.getScene("PlayGame").coins;
@@ -86,6 +77,7 @@ async function sumbit() {
     if (selectOption === question.correctoption) {
       //game should be resumed this need to handled
       if (isDeadPlayer) {
+        console.log("isDeadPlayer");
         game.scene.getScene("PlayGame").player.y = game.config.height / 2;
         resumeGame(coins, isDeadPlayer, currentGain);
       } else {
@@ -93,13 +85,16 @@ async function sumbit() {
       }
     } else {
       if (!isDeadPlayer) {
+        console.log("isnot dead player");
+
         resumeGame(coins, !isDeadPlayer, currentGain);
       } else {
         //u die
         // const coins = game.scene.getScene("PlayGame").coins;
         game.scene.start("GameOver", {
           coins: coins,
-          currentGain: currentGain
+          currentGain: currentGain,
+          text: "YOU DIED, GAME OVER"
         });
       }
     }
