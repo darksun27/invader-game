@@ -18,14 +18,18 @@ function updateLeaderBoard(info) {
   newInfo.map(elem => {
     if (document.querySelector(`#${elem.id}`) !== null) {
       let value = document.querySelector(`#${elem.id}`);
-      value.innerHTML = `${elem.name} :  ${elem.coins}`;
+      value.innerHTML = `<div class="s1">${elem.name}</div><div class="s2"> ${
+        elem.coins
+      }</div>`;
       value.accessKey = Number(elem.coins);
     } else {
       let outer = document.querySelector(".card-body");
       let div = document.createElement("div");
       div.id = elem.id;
       div.className = "result";
-      div.innerHTML = `${elem.name} :  ${elem.coins}`;
+      div.innerHTML = `<div class="s1">${elem.name}</div><div class="s2"> ${
+        elem.coins
+      }</div>`;
       div.accessKey = Number(elem.coins);
 
       outer.appendChild(div);

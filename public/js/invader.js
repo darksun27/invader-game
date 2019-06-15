@@ -4,9 +4,8 @@ var game;
 let gameOptions = {
   platformStartSpeed: 300,
   spawnRange: [100, 200],
-  platformSizeRange: [50, 250],
+  platformSizeRange: [100, 300],
   playerGravity: 900,
-  // starsGravity: 1200,
   jumpForce: 400,
   playerStartPosition: 200,
   jumps: 2
@@ -16,8 +15,8 @@ window.onload = function() {
   let gameConfig = {
     // object containing configuration options
     type: Phaser.AUTO,
-    width: 950,
-    height: window.innerHeight,
+    width: 960,
+    height: window.innerHeight * 0.8,
     scene: [Register, playGame, GameOverScene],
     backgroundColor: 0x444444,
 
@@ -45,19 +44,31 @@ class Register extends Phaser.Scene {
   }
 
   preload() {
-    this.load.atlas("gems", "assets/gems.png", "assets/gems.json");
+    // this.load.atlas("gems", "assets/gems.png", "assets/gems.json");
+    this.load.path = "assets/";
+
+    this.load.image("cat1", "cat1.png");
+    this.load.image("cat2", "cat2.png");
+    this.load.image("cat3", "cat3.png");
+    this.load.image("cat4", "cat4.png");
   }
   create() {
     this.anims.create({
-      key: "everything",
-      frames: this.anims.generateFrameNames("gems"),
+      key: "snooze",
+      frames: [
+        { key: "cat1" },
+        { key: "cat2" },
+        { key: "cat3" },
+        { key: "cat4", duration: 50 }
+      ],
+      frameRate: 8,
       repeat: -1
     });
 
     this.add
-      .sprite(500, 500, "gems")
+      .sprite(450, 150, "cat1")
       .setScale(3)
-      .play("everything");
+      .play("snooze");
     this.register();
   }
 
@@ -77,33 +88,51 @@ class GameOverScene extends Phaser.Scene {
 
   preload() {
     this.load.image("sky", "assets/sky.png");
+    this.load.image("robo", "assets/case.jpg");
+    this.load.atlas("gems", "assets/gems.png", "assets/gems.json");
   }
 
   create() {
     let image = this.add.image(600, 300, "sky");
-    image.setScale(2).setScrollFactor(0);
+    let robo = this.add.image(600, 300, "robo");
 
-    this.add.text(300, 200, "GAME OVER", {
+    image.setScale(2).setScrollFactor(0);
+    robo.setScale(2).setScrollFactor(0);
+    robo.setAlpha(0.1);
+    this.add.text(300, 100, "YOU DIED, GAME OVER", {
       fontSize: "64px",
       fill: "#000",
       fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
     });
-    if (this.data.currentGain >= 0) {
+
+    let currentGain = game.scene.getScene("PlayGame").currentGain;
+    if (currentGain >= 0) {
       this.sign = "+";
     } else {
       this.sign = "";
     }
-    this.add.text(430, 320, `${this.sign}${this.data.currentGain} Gain`, {
+    this.add.text(430, 200, `${this.sign}${currentGain} Coins earned`, {
       fontSize: "20px",
       fill: "#000",
       fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
     });
 
-    this.add.text(360, 350, `Total score =  ${this.data.coins} coins`, {
+    this.add.text(360, 250, `Total score =  ${this.data.coins} coins`, {
       fontSize: "20px",
       fill: "#000",
       fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
     });
+    this.anims.create({
+      key: "everything",
+      frames: this.anims.generateFrameNames("gems"),
+      repeat: -1
+    });
+
+    this.add
+      .sprite(490, 350, "gems")
+      .setScale(1)
+      .play("everything");
+    this.register();
   }
 }
 
@@ -133,12 +162,21 @@ class playGame extends Phaser.Scene {
     });
     this.load.audio("theme", "assets/sound/startSound.mp3");
     this.load.audio("death", "assets/sound/explode1.mp3");
+    this.load.audio("starmusic", "assets/sound/p-ping.mp3");
   }
 
-  collectStar(player, star) {
+  async collectStar(player, star) {
     star.disableBody(true, true);
-    // this.scoreText
+    this.coins += 5;
+    this.currentGain += 5;
+    const userRef = stuRef.ref;
+    this.scoreText.setText("Earnings: " + this.coins);
+    this.starmusic.play();
+    await userRef
+      .child(this.id)
+      .ref.update({ coins: this.coins, id: this.id, name: this.name });
   }
+
   collectQues(player, ques) {
     ques.disableBody(true, true);
     pushQuestion(this.i, game, false);
@@ -147,6 +185,7 @@ class playGame extends Phaser.Scene {
   create() {
     this.music = this.sound.add("theme");
     this.death = this.sound.add("death");
+    this.starmusic = this.sound.add("starmusic");
     this.music.play();
     let image = this.add.image(400, 300, "sky");
 
@@ -217,14 +256,38 @@ class playGame extends Phaser.Scene {
       "dude"
     );
 
-    this.scoreText = this.add.text(16, 16, `score: ${this.coins}`, {
-      fontSize: "16px",
-      fill: "#000"
+    this.staticCoin = this.physics.add.sprite(920, 45, "star");
+    this.staticCoin.body.setAllowGravity(false);
+    this.staticCoin.displayWidth = 40;
+    this.staticCoin.displayHeight = 40;
+    this.scoreText = this.add.text(650, 32, `Earnings: ${this.coins}`, {
+      fontSize: "30px",
+      fill: "#000",
+      stroke: "#fff",
+      strokeThickness: 2,
+      shadow: {
+        offsetX: 0,
+        offsetY: 0,
+        color: "#000",
+        blur: 0,
+        stroke: false,
+        fill: false
+      }
     });
 
-    this.playerName = this.add.text(16, 32, `Name: ${this.name}`, {
-      fontSize: "16px",
-      fill: "#000"
+    this.playerName = this.add.text(16, 32, `Player: ${this.name}`, {
+      fontSize: "30px",
+      fill: "#000",
+      stroke: "#fff",
+      strokeThickness: 2,
+      shadow: {
+        offsetX: 0,
+        offsetY: 0,
+        color: "#000",
+        blur: 0,
+        stroke: false,
+        fill: false
+      }
     });
 
     this.player.setBounce(0.2);
@@ -281,7 +344,7 @@ class playGame extends Phaser.Scene {
       this.platformPool.remove(platform);
     } else {
       platform = this.physics.add.sprite(
-        posX,
+        posX - 20,
         game.config.height * 0.8,
         "platform"
       );
@@ -307,11 +370,7 @@ class playGame extends Phaser.Scene {
       coin.visible = true;
       this.coinPool.remove(coin);
     } else {
-      coin = this.physics.add.sprite(
-        posX * 1.5,
-        game.config.height * 0.7,
-        "star"
-      );
+      coin = this.physics.add.sprite(posX, game.config.height * 0.7, "star");
 
       coin.setImmovable(true);
       coin.body.setAllowGravity(false);

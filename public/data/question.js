@@ -27,7 +27,12 @@ var questionData = [
   },
   {
     question: "Inside which HTML element do we put the JavaScript?",
-    option: ["<script>", "<js>", "<javascript>", "<scripting>"],
+    option: [
+      "&lt;script&gt;",
+      "&lt;js&gt;",
+      "&lt;javascript&gt;",
+      "&lt;scripting&gt;"
+    ],
     hint: "Javascript is a scripting language which runs on scripts",
     correctoption: 0
   },
@@ -35,17 +40,17 @@ var questionData = [
     question:
       "What is the correct syntax for referring to an external script called &quot;xxx.js&quot;?",
     option: [
-      "<script name = “xxx.js”>",
-      "<script href = “xxx.js”>",
-      "<script src=”xxx.js”>",
-      "<script import=”xxx.js”>"
+      "&lt;script name = “xxx.js”&gt;",
+      "&lt;script href = “xxx.js”&gt;",
+      "&lt;script src=”xxx.js”&gt;",
+      "&lt;script import=”xxx.js”&gt;"
     ],
     hint: "Javascript is a scripting language which runs on scripts",
-    correctoption: 0
+    correctoption: 2
   },
   {
     question:
-      "What is the correct JavaScript syntax to change the content of the HTML element below?\n<p id=`demo`>This is a demonstration.</p>",
+      "What is the correct JavaScript syntax to change the content of the HTML element below?\n&lt;p id=`demo`&gt;This is a demonstration.&lt;/p&gt;",
     option: [
       "#demo.innerHTML = “Hello World!”;",
       "document.getElement(“p”).innerHTML = “Hello World!”;",
@@ -58,16 +63,17 @@ var questionData = [
   {
     question: "Where is the correct place to insert a JavaScript?",
     option: [
-      "The <body> section",
-      "Both the <head> section and the <body> section are correct",
-      "The <head> section",
-      "In the <html> section"
+      "The &lt;body&gt; section",
+      "Both the &lt;head&gt; section and the &lt;body&gt; section are correct",
+      "The &lt;head&gt; section",
+      "In the &lt;html&gt; section"
     ],
     hint: "after html and css javascript should be executed!!",
     correctoption: 0
   },
   {
-    question: "The external JavaScript file must contain the <script> tag.",
+    question:
+      "The external JavaScript file must contain the &lt;script&gt; tag.",
     option: ["True", "False", "Depends upon the scenario", "Can’t say"],
     hint: "js is written under the script tag",
     correctoption: 1
@@ -92,7 +98,7 @@ var questionData = [
   {
     question:
       "How to write an IF statement for executing some code if `i` is NOT equal to 5?",
-    option: ["if i <> 5", "if(i<>5)", "if(i!=5)", "if(i!=5)then"],
+    option: ["if i &lt;&gt; 5", "if(i&lt;&gt;5)", "if(i!=5)", "if(i!=5)then"],
     hint: "",
     correctoption: 2
   },
@@ -100,8 +106,8 @@ var questionData = [
     question: "How does a WHILE loop start?",
     option: [
       "while i=1 to 10",
-      "while(i<=10)",
-      "while(i<=10;i++)",
+      "while(i&lt;=10)",
+      "while(i&lt;=10;i++)",
       "whlile(i=0)"
     ],
     hint: "",
