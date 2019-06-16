@@ -77,7 +77,6 @@ async function sumbit() {
     if (selectOption === question.correctoption) {
       //game should be resumed this need to handled
       if (isDeadPlayer) {
-        console.log("isDeadPlayer");
         game.scene.getScene("PlayGame").player.y = game.config.height / 2;
         resumeGame(coins, isDeadPlayer, currentGain);
       } else {
@@ -85,8 +84,6 @@ async function sumbit() {
       }
     } else {
       if (!isDeadPlayer) {
-        console.log("isnot dead player");
-
         resumeGame(coins, !isDeadPlayer, currentGain);
       } else {
         //u die
