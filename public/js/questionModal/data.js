@@ -1,10 +1,7 @@
-let optionSelect = [];
-function isOptionSelect() {
-  return optionSelect.length !== 0;
-}
-
 let question = null;
 let isDeadPlayer = null;
+let yourAnswer = null;
+let answerState = {};
 
 function pushQuestion(i, game, isDead, array) {
   game.scene.getScene("PlayGame").i += 1;
@@ -13,7 +10,6 @@ function pushQuestion(i, game, isDead, array) {
   $("#myModal").modal({ backdrop: "static", keyboard: true });
 
   const index = array[i];
-
   question = questionData[index - 1];
 
   const questionNo = document.getElementById("questionNo");
@@ -24,34 +20,46 @@ function pushQuestion(i, game, isDead, array) {
   questions.innerHTML = `<div>${question.question}</div>`;
 
   const option = document.getElementById("option-btn");
-
-  const p = question.option.map((e, id) => {
-    return `<div id=${id} onClick="check(${id},${
-      question.correctoption
-    })" class="btn btn-info btn-block">${e}</div>`;
+  question.option.map((answer, id) => {
+    let div = document.createElement("div");
+    div.textContent = answer;
+    option.appendChild(div);
+    div.id = id;
+    div.className = "btn btn-info btn-block options";
+    div.onclick = optionClicked(div.id);
   });
 
-  option.innerHTML = p.join(" ");
+  document
+    .getElementById("myModal")
+    .addEventListener("keypress", e => checkAnswer(e));
 }
 
-function check(e, option, callback) {
-  const element = document.getElementById(e);
-  element.classList.remove("btn-info");
-  element.classList.add("btn-primary");
-  if (optionSelect.length === 0) {
-    optionSelect.push(e);
-  } else {
-    const elementToRemove = document.getElementById(optionSelect[0]);
-    elementToRemove.classList.remove("btn-primary");
-    elementToRemove.classList.add("btn-info");
-    optionSelect.pop();
-    optionSelect.push(e);
+//option buttons event
+function optionClicked(id) {
+  let nodeId = document.getElementById(`${id}`);
+  nodeId.addEventListener("mousedown", () => {
+    answerState["yourAnswer"] = id;
+  });
+}
+
+//check key code to submit answer (enter button)
+function checkAnswer(e) {
+  if (e.keyCode === 13) {
+    sumbit(Number(answerState.yourAnswer));
   }
 }
 
-async function resumeGame(coins, isNotDead, currentGain) {
-  let updateCoin = isNotDead ? coins : coins + 50;
-  let updateCurrentGain = isNotDead ? currentGain : currentGain + 50;
+//resume the paused game after ques is answered
+async function resumeGame(coins, currentGain, correct) {
+  let updateCoin = 0;
+  let updateCurrentGain = 0;
+  if (correct) {
+    updateCoin = coins + 50;
+    updateCurrentGain = currentGain + 50;
+  } else {
+    currentGain = currentGain;
+    updateCoin = coins;
+  }
 
   game.scene.getScene("PlayGame").coins = updateCoin;
   game.scene.getScene("PlayGame").currentGain = updateCurrentGain;
@@ -59,31 +67,35 @@ async function resumeGame(coins, isNotDead, currentGain) {
   const id = game.scene.getScene("PlayGame").id;
   const userRef = stuRef.ref;
   await userRef.child(id).ref.update({ coins: updateCoin, id, name });
-
   game.scene.getScene("PlayGame").scoreText.setText("Earnings: " + updateCoin);
   game.scene.resume("PlayGame");
 }
 
-async function sumbit() {
-  const selectOption = optionSelect[0];
+//submit the answer choosen
+async function sumbit(selectOption) {
   if (selectOption != undefined) {
     const coins = game.scene.getScene("PlayGame").coins;
     const currentGain = game.scene.getScene("PlayGame").currentGain;
 
     optionSelect = [];
 
+    question.option.map((_, id) => {
+      let divRemove = document.getElementById(id);
+      divRemove.parentNode.removeChild(divRemove);
+    });
+
     $("#myModal").modal("toggle");
     if (selectOption === question.correctoption) {
       //game should be resumed this need to handled
       if (isDeadPlayer) {
         game.scene.getScene("PlayGame").player.y = game.config.height / 2;
-        resumeGame(coins, isDeadPlayer, currentGain);
+        resumeGame(coins, currentGain, true);
       } else {
-        resumeGame(coins, isDeadPlayer, currentGain);
+        resumeGame(coins, currentGain, true);
       }
     } else {
       if (!isDeadPlayer) {
-        resumeGame(coins, !isDeadPlayer, currentGain);
+        resumeGame(coins, currentGain, false);
       } else {
         //u die
         game.scene.stop("PlayGame");
