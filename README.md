@@ -1,2 +1,2 @@
 # invader-game
-Shooting spaceships and answer questions
+Runner maze and  explore the adventure
