@@ -19,7 +19,7 @@ class playGame extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("platform", "assets/platform.png");
+    this.load.image("platform", "assets/platform1.png");
     this.load.image("star", "assets/coin.png");
     this.load.image("sky", "assets/sky.png");
     this.load.image("player", "assets/player.png");
