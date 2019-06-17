@@ -480,16 +480,17 @@ class playGame extends Phaser.Scene {
         text: "YOU PLAYED WELL, HURAY"
       });
     }
-
+    if (this.cursors.left.isDown) {
+      this.player.setVelocityX(-60);
+      this.player.anims.play("left", true);
+    } else if (this.cursors.right.isDown) {
+      this.player.setVelocityX(60);
+      this.player.anims.play("right", true);
+    } else {
+      this.player.setVelocityX(0);
+      this.player.anims.play("turn");
+    }
     if (this.cursors.space.isDown && this.player.body.touching.down) {
-      if (this.cursors.right.isDown) {
-        this.player.setVelocityX(60);
-
-        this.player.anims.play("right", true);
-      } else {
-        this.player.setVelocityX(0);
-        this.player.anims.play("turn");
-      }
       this.jump();
       this.cursors.space.isDown = false;
     }
