@@ -368,6 +368,10 @@ class playGame extends Phaser.Scene {
       null,
       this
     );
+
+    // let keyObj = this.input.keyboard.addKey("BACKSPACE");
+    // keyObj.on("down", this.jump);
+    // this.input.on("pointerdown", this.jump, this);
   }
 
   // the core of the script: platform are added from the pool or created on the fly
@@ -452,6 +456,7 @@ class playGame extends Phaser.Scene {
 
   // the player jumps when on the ground, or once in the air as long as there are jumps left and the first jump was on the ground
   jump() {
+    console.log("jumping");
     if (
       this.player.body.touching.down ||
       (this.playerJumps > 0 && this.playerJumps < gameOptions.jumps)
@@ -459,10 +464,12 @@ class playGame extends Phaser.Scene {
       if (this.player.body.touching.down) {
         this.playerJumps = 0;
       }
-      this.player.setVelocityY(gameOptions.jumpForce * -1);
+      this.player.setVelocityY(-600);
+      // this.player.setVelocityY(gameOptions.jumpForce * -1);
       this.playerJumps++;
     }
   }
+
   update() {
     if (this.i > questionData.length - 1) {
       game.scene.stop("PlayGame");
@@ -473,21 +480,20 @@ class playGame extends Phaser.Scene {
         text: "YOU PLAYED WELL, HURAY"
       });
     }
-    if (this.cursors.left.isDown) {
-      this.player.setVelocityX(-120);
-      this.player.anims.play("left", true);
-    } else if (this.cursors.right.isDown) {
-      this.player.setVelocityX(60);
-
-      this.player.anims.play("right", true);
-    } else {
-      this.player.setVelocityX(0);
-      this.player.anims.play("turn");
-    }
 
     if (this.cursors.space.isDown && this.player.body.touching.down) {
-      this.player.setVelocityY(-600);
+      if (this.cursors.right.isDown) {
+        this.player.setVelocityX(60);
+
+        this.player.anims.play("right", true);
+      } else {
+        this.player.setVelocityX(0);
+        this.player.anims.play("turn");
+      }
+      this.jump();
+      this.cursors.space.isDown = false;
     }
+
     // game over
     if (this.player.y > game.config.height) {
       this.music.pause();
