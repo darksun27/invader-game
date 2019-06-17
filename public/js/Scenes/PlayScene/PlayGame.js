@@ -5,7 +5,7 @@ while (nums.size !== questionData.length) {
 
 const array = [...nums];
 
-class playGame extends Phaser.Scene {
+class PlayGame extends Phaser.Scene {
   constructor() {
     super("PlayGame");
   }
@@ -19,15 +19,8 @@ class playGame extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("platform", "assets/platform1.png");
-    this.load.image("star", "assets/coin.png");
     this.load.image("sky", "assets/sky.png");
-    this.load.image("player", "assets/player.png");
     this.load.image("ques", "assets/question.png");
-    this.load.spritesheet("dude", "assets/dude.png", {
-      frameWidth: 32,
-      frameHeight: 48
-    });
     this.load.audio("theme", "assets/sound/startSound.mp3");
     this.load.audio("death", "assets/sound/explode1.mp3");
     this.load.audio("starmusic", "assets/sound/p-ping.mp3");
@@ -49,68 +42,53 @@ class playGame extends Phaser.Scene {
   collectQues(player, ques) {
     ques.disableBody(true, true);
     pushQuestion(this.i, game, false, array);
+    this.music.resume();
   }
 
   create() {
     this.music = this.sound.add("theme");
     this.death = this.sound.add("death");
     this.starmusic = this.sound.add("starmusic");
-    this.music.play();
     let image = this.add.image(400, 300, "sky");
-
-    let scaleX = this.cameras.main.width / image.width;
-    let scaleY = this.cameras.main.height / image.height;
-    let scale = Math.max(scaleX, scaleY);
     image.setScale(4).setScrollFactor(0);
-    // group with all active platforms.
+    this.music.play();
+
     this.platformGroup = this.add.group({
-      // once a platform is removed, it's added to the pool
       removeCallback: function(platform) {
         platform.scene.platformPool.add(platform);
       }
     });
 
-    // pool
     this.platformPool = this.add.group({
-      // once a platform is removed from the pool, it's added to the active platforms group
       removeCallback: function(platform) {
         platform.scene.platformGroup.add(platform);
       }
     });
 
-    // group with all active platforms.
     this.coinGroup = this.add.group({
-      // once a platform is removed, it's added to the pool
       removeCallback: function(coin) {
         coin.scene.coinPool.add(coin);
       }
     });
 
-    // pool
     this.coinPool = this.add.group({
-      // once a platform is removed from the pool, it's added to the active platforms group
       removeCallback: function(coin) {
         coin.scene.coinGroup.add(coin);
       }
     });
 
-    // group with all active platforms.
     this.quesGroup = this.add.group({
-      // once a platform is removed, it's added to the pool
       removeCallback: function(ques) {
         ques.scene.quesPool.add(ques);
       }
     });
 
-    // pool
     this.quesPool = this.add.group({
-      // once a platform is removed from the pool, it's added to the active platforms group
       removeCallback: function(ques) {
         ques.scene.quesGroup.add(ques);
       }
     });
 
-    // number of consecutive jumps made by the player
     this.playerJumps = 0;
 
     // adding a platform to the game, the arguments are platform width and x position
@@ -125,6 +103,15 @@ class playGame extends Phaser.Scene {
       "dude"
     );
 
+    this.shadow = {
+      offsetX: 0,
+      offsetY: 0,
+      color: "#000",
+      blur: 0,
+      stroke: false,
+      fill: false
+    };
+
     this.staticCoin = this.physics.add.sprite(920, 50, "star");
     this.staticCoin.body.setAllowGravity(false);
     this.staticCoin.displayWidth = 40;
@@ -134,14 +121,7 @@ class playGame extends Phaser.Scene {
       fill: "#000",
       stroke: "#fff",
       strokeThickness: 12,
-      shadow: {
-        offsetX: 0,
-        offsetY: 0,
-        color: "#000",
-        blur: 0,
-        stroke: false,
-        fill: false
-      }
+      shadow: this.shadow
     });
 
     this.playerName = this.add.text(16, 32, `Player: ${this.name}`, {
@@ -149,37 +129,11 @@ class playGame extends Phaser.Scene {
       fill: "#000",
       stroke: "#fff",
       strokeThickness: 12,
-      shadow: {
-        offsetX: 0,
-        offsetY: 0,
-        color: "#000",
-        blur: 0,
-        stroke: false,
-        fill: false
-      }
+      shadow: this.shadow
     });
 
     this.player.setBounce(0.2);
     this.player.setGravityY(gameOptions.playerGravity);
-
-    this.anims.create({
-      key: "left",
-      frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: "turn",
-      frames: [{ key: "dude", frame: 4 }],
-      frameRate: 20
-    });
-    this.anims.create({
-      key: "right",
-      frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
-      frameRate: 10,
-      repeat: -1
-    });
-
     this.cursors = this.input.keyboard.createCursorKeys();
 
     // setting collisions between the player and the platform group
@@ -282,9 +236,7 @@ class playGame extends Phaser.Scene {
     );
   }
 
-  // the player jumps when on the ground, or once in the air as long as there are jumps left and the first jump was on the ground
   jump() {
-    console.log("jumping");
     if (
       this.player.body.touching.down ||
       (this.playerJumps > 0 && this.playerJumps < gameOptions.jumps)
@@ -293,7 +245,6 @@ class playGame extends Phaser.Scene {
         this.playerJumps = 0;
       }
       this.player.setVelocityY(-600);
-      // this.player.setVelocityY(gameOptions.jumpForce * -1);
       this.playerJumps++;
     }
   }
@@ -327,10 +278,7 @@ class playGame extends Phaser.Scene {
     if (this.player.y > game.config.height) {
       this.music.pause();
       this.death.play();
-
       pushQuestion(this.i, game, true, array);
-
-      // this.music.resume();
     }
     this.player.x = gameOptions.playerStartPosition;
 

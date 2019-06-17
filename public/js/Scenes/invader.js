@@ -1,5 +1,5 @@
 var game;
-// global game options
+
 let gameOptions = {
   platformStartSpeed: 300,
   spawnRange: [100, 200],
@@ -15,7 +15,7 @@ window.onload = function() {
     type: Phaser.AUTO,
     width: 960,
     height: window.innerHeight * 0.8,
-    scene: [Register, playGame, GameOverScene],
+    scene: [Register, PreLoadScene, PlayGame, GameOverScene],
     backgroundColor: 0x444444,
     physics: {
       default: "arcade",

@@ -28,14 +28,14 @@ async function nameRegister() {
           id: key
         });
         $("#firebase").modal("toggle");
-        game.scene.start("PlayGame", {
+        game.scene.start("Preload", {
           data: { name: nickname, coins: 0, id: key, currentGain: 0 }
         });
       } else {
         //retreive the data from the user and started the game
         $("#firebase").modal("toggle");
         const data = user[userIndex];
-        game.scene.start("PlayGame", { data });
+        game.scene.start("Preload", { data });
       }
     } else {
       const key = stuRef.push().key;
@@ -45,7 +45,7 @@ async function nameRegister() {
         id: key
       });
       $("#firebase").modal("toggle");
-      game.scene.start("PlayGame", {
+      game.scene.start("Preload", {
         data: { name: nickname, coins: 0, id: key, currentGain: 0 }
       });
     }
