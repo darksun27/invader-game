@@ -1,5 +1,4 @@
 let optionSelect = [];
-console.log(questionData);
 function isOptionSelect() {
   return optionSelect.length !== 0;
 }
