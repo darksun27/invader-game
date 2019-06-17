@@ -1,178 +1,10 @@
-var game;
-
 const nums = new Set();
 while (nums.size !== questionData.length) {
   nums.add(Math.floor(Math.random() * questionData.length) + 1);
 }
 
 const array = [...nums];
-console.log(array);
 
-// global game options
-let gameOptions = {
-  platformStartSpeed: 300,
-  spawnRange: [100, 200],
-  platformSizeRange: [200, 400],
-  playerGravity: 900,
-  jumpForce: 400,
-  playerStartPosition: 200,
-  jumps: 2
-};
-
-window.onload = function() {
-  let gameConfig = {
-    // object containing configuration options
-    type: Phaser.AUTO,
-    width: 960,
-    height: window.innerHeight * 0.8,
-    scene: [Register, playGame, GameOverScene],
-    backgroundColor: 0x444444,
-
-    // physics settings
-    physics: {
-      default: "arcade",
-      arcade: {
-        gravity: { y: 300 },
-        debug: false
-      }
-    }
-  };
-  game = new Phaser.Game(gameConfig);
-  window.focus();
-  resize();
-  window.addEventListener("resize", resize, false);
-};
-
-class Register extends Phaser.Scene {
-  constructor() {
-    super("register");
-  }
-  init() {
-    this.register = this.registerName;
-  }
-
-  preload() {
-    // this.load.atlas("gems", "assets/gems.png", "assets/gems.json");
-    this.load.path = "assets/";
-
-    this.load.image("cat1", "cat1.png");
-    this.load.image("cat2", "cat2.png");
-    this.load.image("cat3", "cat3.png");
-    this.load.image("cat4", "cat4.png");
-  }
-  create() {
-    this.anims.create({
-      key: "snooze",
-      frames: [
-        { key: "cat1" },
-        { key: "cat2" },
-        { key: "cat3" },
-        { key: "cat4", duration: 50 }
-      ],
-      frameRate: 8,
-      repeat: -1
-    });
-
-    this.add
-      .sprite(450, 150, "cat1")
-      .setScale(3)
-      .play("snooze");
-    this.register();
-  }
-
-  registerName() {
-    $("#firebase").modal("show");
-  }
-}
-
-class GameOverScene extends Phaser.Scene {
-  constructor(data) {
-    super("GameOver");
-  }
-
-  init(data) {
-    this.data = data;
-  }
-
-  preload() {
-    this.load.image("sky", "assets/sky.png");
-    this.load.image("robo", "assets/case.jpg");
-    this.load.atlas("gems", "assets/gems.png", "assets/gems.json");
-  }
-
-  create() {
-    let image = this.add.image(600, 300, "sky");
-    let robo = this.add.image(600, 300, "robo");
-
-    image.setScale(2).setScrollFactor(0);
-    robo.setScale(2).setScrollFactor(0);
-    robo.setAlpha(0.1);
-    this.add.text(100, 100, this.data.text, {
-      fontSize: "64px",
-      fill: "#000",
-      fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
-    });
-
-    let currentGain = game.scene.getScene("PlayGame").currentGain;
-    if (currentGain >= 0) {
-      this.sign = "+";
-    } else {
-      this.sign = "";
-    }
-    this.clickButton = this.add
-      .text(400, 450, "Play Again", {
-        fontSize: "30px",
-        fill: "#000",
-        stroke: "#fff",
-        strokeThickness: 12,
-        shadow: {
-          offsetX: 0,
-          offsetY: 0,
-          color: "#000",
-          blur: 0,
-          stroke: false,
-          fill: false
-        }
-      })
-      .setInteractive()
-      .on("pointerdown", () => {
-        game.scene.stop("GameOver");
-
-        game.scene.start("PlayGame", {
-          data: {
-            name: game.scene.getScene("PlayGame").name,
-            coins: game.scene.getScene("PlayGame").coins,
-            id: game.scene.getScene("PlayGame").id,
-            currentGain: 0
-          }
-        });
-      });
-
-    this.add.text(400, 200, `${this.sign}${currentGain} Coins earned`, {
-      fontSize: "20px",
-      fill: "#000",
-      fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
-    });
-
-    this.add.text(360, 250, `Total score =  ${this.data.coins} coins`, {
-      fontSize: "20px",
-      fill: "#000",
-      fontFamily: 'Verdana, "Times New Roman", Tahoma, serif'
-    });
-    this.anims.create({
-      key: "everything",
-      frames: this.anims.generateFrameNames("gems"),
-      repeat: -1
-    });
-
-    this.add
-      .sprite(490, 320, "gems")
-      .setScale(1)
-      .play("everything");
-  }
-}
-
-// playGame scene
 class playGame extends Phaser.Scene {
   constructor() {
     super("PlayGame");
@@ -368,10 +200,6 @@ class playGame extends Phaser.Scene {
       null,
       this
     );
-
-    // let keyObj = this.input.keyboard.addKey("BACKSPACE");
-    // keyObj.on("down", this.jump);
-    // this.input.on("pointerdown", this.jump, this);
   }
 
   // the core of the script: platform are added from the pool or created on the fly
@@ -564,19 +392,5 @@ class playGame extends Phaser.Scene {
       );
       this.addQues(nextQuesWidth, game.config.width + nextQuesWidth / 2);
     }
-  }
-}
-function resize() {
-  let canvas = document.querySelector("canvas");
-  let windowWidth = window.innerWidth;
-  let windowHeight = window.innerHeight;
-  let windowRatio = windowWidth / windowHeight;
-  let gameRatio = game.config.width / game.config.height;
-  if (windowRatio < gameRatio) {
-    canvas.style.width = windowWidth + "px";
-    canvas.style.height = windowWidth / gameRatio + "px";
-  } else {
-    canvas.style.width = windowHeight * gameRatio + "px";
-    canvas.style.height = windowHeight + "px";
   }
 }

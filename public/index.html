@@ -42,6 +42,7 @@
         height: 100vh;
         text-align: center;
         padding-top: 20px;
+        overflow-y: scroll !important;
       }
       #leaderboard h2 {
         font-weight: 600;
@@ -199,14 +200,17 @@
       integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
       crossorigin="anonymous"
     ></script>
-    <script src="./data/question.js"></script>
-    <script src="./js/phaser.min.js"></script>
-    <script src="./js/invader.js"></script>
-    <script src="./js/nickname.js"></script>
-    <script src="./js/data.js"></script>
+    <script src="./data/web/question.js"></script>
+    <script src="./js/ext/phaser.min.js"></script>
+    <script src="./js/Scenes/invader.js"></script>
+    <script src="./js/registerPlayer.js"></script>
+    <script src="./js/questionModal/data.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.1.1/firebase-database.js"></script>
-    <script src="./js/firebase.js"></script>
-    <script src="./js/anlaytics.js"></script>
+    <script src="./js/firebase/firebase.js"></script>
+    <script src="./js/leaderboard/anlaytics.js"></script>
+    <script src="./js/Scenes/RegisterScene/Register.js"></script>
+    <script src="./js/Scenes/PlayScene/PlayGame.js"></script>
+    <script src="./js/Scenes/GameOverScene/GameOver.js"></script>
   </body>
 </html>
