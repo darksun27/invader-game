@@ -45,7 +45,8 @@ function optionClicked(id) {
 //check key code to submit answer (enter button)
 function checkAnswer(e) {
   if (e.keyCode === 13) {
-    sumbit(Number(answerState.yourAnswer));
+    sumbit(answerState.yourAnswer);
+    answerState = {};
   }
 }
 
@@ -73,7 +74,7 @@ async function resumeGame(coins, currentGain, correct) {
 
 //submit the answer choosen
 async function sumbit(selectOption) {
-  if (selectOption != undefined) {
+  if (selectOption !== undefined) {
     const coins = game.scene.getScene("PlayGame").coins;
     const currentGain = game.scene.getScene("PlayGame").currentGain;
 
@@ -85,8 +86,8 @@ async function sumbit(selectOption) {
     });
 
     $("#myModal").modal("toggle");
-    if (selectOption === question.correctoption) {
-      //game should be resumed this need to handled
+
+    if (Number(selectOption) === question.correctoption) {
       if (isDeadPlayer) {
         game.scene.getScene("PlayGame").player.y = game.config.height / 2;
         resumeGame(coins, currentGain, true);
