@@ -87,7 +87,7 @@ async function sumbit() {
         resumeGame(coins, !isDeadPlayer, currentGain);
       } else {
         //u die
-        // const coins = game.scene.getScene("PlayGame").coins;
+        game.scene.stop("PlayGame");
         game.scene.start("GameOver", {
           coins: coins,
           currentGain: currentGain,
