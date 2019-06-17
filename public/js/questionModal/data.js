@@ -31,7 +31,7 @@ function pushQuestion(i, game, isDead, array) {
 
   document
     .getElementById("myModal")
-    .addEventListener("keypress", e => checkAnswer(e));
+    .addEventListener("keydown", e => checkAnswer(e));
 }
 
 //option buttons event
@@ -46,7 +46,6 @@ function optionClicked(id) {
 function checkAnswer(e) {
   if (e.keyCode === 13) {
     sumbit(answerState.yourAnswer);
-    answerState = {};
   }
 }
 
@@ -74,7 +73,8 @@ async function resumeGame(coins, currentGain, correct) {
 
 //submit the answer choosen
 async function sumbit(selectOption) {
-  if (selectOption !== undefined) {
+  console.log(selectOption, "//////////////n", answerState);
+  if (selectOption != undefined) {
     const coins = game.scene.getScene("PlayGame").coins;
     const currentGain = game.scene.getScene("PlayGame").currentGain;
 
